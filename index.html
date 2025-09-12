@@ -8,27 +8,33 @@
   body { font-family: 'Rajdhani', sans-serif; background:#0a0a1a; color:#fff; margin:0; }
   header { text-align:center; padding:40px 20px 20px; }
   header h1 { font-size:3rem; color:#00f3ff; text-shadow:0 0 10px #00f3ff,0 0 20px #ff00ff; }
-  header p { color:#ff00ff; margin-top:10px; font-size:1.2rem; }
+  
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; max-width:1200px; margin:40px auto; padding:0 20px; }
-  .canal { background:rgba(10,10,26,0.8); border:1px solid #00f3ff; border-radius:10px; padding:20px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; transition:transform 0.3s ease, box-shadow 0.3s ease; }
+  .canal { background:rgba(10,10,26,0.8); border:1px solid #00f3ff; border-radius:10px; padding:20px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; transition:transform 0.3s ease, box-shadow 0.3s ease; cursor:pointer; text-align:center;}
   .canal:hover { transform:translateY(-5px); box-shadow:0 0 20px #00f3ff,0 0 40px #ff00ff; }
-  .canal h2 { font-size:1.2rem; margin-bottom:15px; text-align:center; }
-  .canal a { text-decoration:none; background:#00f3ff; color:#0a0a1a; padding:10px 20px; border-radius:5px; font-weight:700; transition:background 0.3s ease; }
-  .canal a:hover { background:#ff00ff; color:#fff; }
+  .canal h2 { font-size:1.2rem; margin-bottom:10px; }
+  
   @media(max-width:768px) { header h1 { font-size:2rem; } .canal h2 { font-size:1rem; } }
-  textarea { width:90%; height:150px; margin:20px auto; display:block; background:#111; color:#0ff; border:none; padding:10px; font-family:monospace; }
-  button { display:block; margin:0 auto 40px; padding:10px 20px; font-size:1rem; font-weight:700; border:none; border-radius:5px; background:#ff00ff; color:#fff; cursor:pointer; }
-  button:hover { background:#00f3ff; color:#0a0a1a; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>Super EPTV Marcos TV</h1>
-  <p>Cole os links abaixo e clique em "Gerar canais"</p>
 </header>
 
-<textarea id="links" placeholder="https://embedcanais.com/adultswim
+<div class="grid" id="grid"></div>
+
+<script>
+  // Lista de links (cole aqui todos os links)
+  const links = [
+    "https://streamtp11.com/global1.php?stream=espn",
+    "https://streamtp11.com/global1.php?stream=espn2",
+    "https://streamtp11.com/global1.php?stream=espn3",
+    "https://streamtp11.com/global1.php?stream=espn4",
+    "https://streamtp11.com/global1.php?stream=espn5",
+    "https://la14hd.com/vivo/canales.php?stream=espn",
+    "https://embedcanais.com/adultswim
 https://embedcanais.com/aee
 https://embedcanais.com/amc
 https://embedcanais.com/animalplanet
@@ -478,41 +484,26 @@ https://streamtp11.com/global1.php?stream=granhermanomulticam
 https://streamtp11.com/global1.php?stream=canal11_pt
 https://streamtp11.com/global1.php?stream=sportv_1pt
 https://streamtp11.com/global1.php?stream=sportv_2pt
-https://streamtp11.com/global1.php?stream=sportv_3pt
-https://streamtp11.com/global1.php?stream=sportv_4pt
-https://streamtp11.com/global1.php?stream=sporttv5
-https://streamtp11.com/global1.php?stream=sporttv6"></textarea>
-<button onclick="gerarCanais()">Gerar canais</button>
+https://streamtp11.com/global1.php?stream=sportv_3pt"
+    // ... cole todos os outros links aqui
+  ];
 
-<div class="grid" id="grid"></div>
-
-<script>
-function gerarCanais() {
   const grid = document.getElementById('grid');
-  const textarea = document.getElementById('links');
-  const links = textarea.value.split('\n').filter(l => l.trim() !== '');
-  grid.innerHTML = ''; // limpa grid antes de gerar
 
   links.forEach(link => {
-    let nome = link.split('/').pop(); // pega última parte do link como nome
-    nome = decodeURIComponent(nome).replace(/[-_]/g,' ').toUpperCase(); // transforma em nome legível
+    let nome = link.split('/').pop().split('?')[0]; // pega última parte antes de ?
+    nome = decodeURIComponent(nome).replace(/[-_]/g,' ').toUpperCase();
 
     const div = document.createElement('div');
     div.classList.add('canal');
+    div.onclick = () => window.open(link, "_blank");
 
     const h2 = document.createElement('h2');
     h2.textContent = nome;
 
-    const a = document.createElement('a');
-    a.href = link;
-    a.target = "_blank";
-    a.textContent = "Clique aqui";
-
     div.appendChild(h2);
-    div.appendChild(a);
     grid.appendChild(div);
   });
-}
 </script>
 
 </body>
