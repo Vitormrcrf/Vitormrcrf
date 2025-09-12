@@ -581,14 +581,29 @@ https://streamtp11.com/global1.php?stream=sporttv6
     const links = rawLinks.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
 
     const channels = links.map(link => {
-        try{
+        try {
             const urlObj = new URL(link);
-            const pathParts = urlObj.pathname.split('/').filter(p=>p!=='');
-            let name = pathParts[pathParts.length-1] || "CANAL DESCONHECIDO";
-            name = name.replace(/-/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
-            return {name:name, url:link};
-        } catch(e){
-            return {name:"CANAL INVÁLIDO", url:link};
+            let name = "";
+
+            // 1. Se tiver ?stream=xxx → usa isso
+            if (urlObj.searchParams.has("stream")) {
+                name = urlObj.searchParams.get("stream");
+            } 
+            // 2. Se não, usa última parte do caminho (/xxx)
+            else {
+                const pathParts = urlObj.pathname.split('/').filter(p => p !== '');
+                name = pathParts[pathParts.length - 1] || "Canal Desconhecido";
+            }
+
+            // 3. Ajusta formatação → ESPN, Sportv 1pt
+            name = name.replace(/[_-]/g, ' ')
+                       .split(' ')
+                       .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                       .join(' ');
+
+            return { name: name, url: link };
+        } catch(e) {
+            return { name: "Canal Inválido", url: link };
         }
     });
 
@@ -599,7 +614,7 @@ https://streamtp11.com/global1.php?stream=sporttv6
         channels.forEach(ch=>{
             const div = document.createElement('div');
             div.className = 'channel-item';
-            div.textContent = ch.name.toUpperCase();
+            div.textContent = ch.name;
             div.addEventListener('click',()=> window.open(ch.url,'_blank'));
             listContainer.appendChild(div);
         });
