@@ -1,231 +1,519 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RIFA BRASIL - Sorteios</title>
-  <script>
-    const config = {
-      premiumValue: 100,
-      ticketValue: 10,
-      winningNumber: null,
-      reservedGroups: "[1] [2] [3] [4] [.5] [6] [7] [8] [9] [10] [11] [12] [13] [.14] [15] [16] [17] [.18] [19] [20] [21] [22] [23] [24] [25]",
-      pixKey: "75991760055. João Vitor Pereira Gabriel",
-      whatsappNumber: "5575991760055"
-    };
-
-    const animals = [
-      "AVESTRUZ", "ÁGUIA", "BURRO", "BORBOLETA", "CACHORRO",
-      "CABRA", "CARNEIRO", "CAMELO", "COBRA", "COELHO",
-      "CAVALO", "ELEFANTE", "GALO", "GATO", "JACARÉ",
-      "LEÃO", "MACACO", "PORCO", "PAVÃO", "PERU",
-      "TOURO", "TIGRE", "URSO", "VEADO", "VACA"
-    ];
-
-    let selectedGroup = null;
-    let generatedId = null;
-  </script>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;-webkit-tap-highlight-color:transparent;}
-    body{background:radial-gradient(circle at top left,#0f2027,#203a43,#2c5364);min-height:100vh;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;}
-    .container{width:100%;max-width:500px;background:#111827;border-radius:20px;padding:20px;box-shadow:0 0 25px rgba(0,255,255,0.2),0 0 40px rgba(0,0,0,0.6);overflow:hidden;position:relative;}
-    .container::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#00f2fe,#4facfe,#00f2fe);box-shadow:0 0 20px cyan;}
-    .header{text-align:center;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid rgba(255,255,255,0.2);}
-    h1{color:#00f2fe;margin-bottom:8px;font-size:26px;text-transform:uppercase;letter-spacing:1.5px;text-shadow:0 0 8px #00f2fe,0 0 12px #4facfe;}
-    .header p{color:#90caf9;font-weight:600;font-size:15px;}
-    .welcome-message{background:linear-gradient(135deg,#1f2937,#111827);padding:15px;border-radius:12px;margin-bottom:20px;font-size:15px;line-height:1.5;border-left:5px solid #00f2fe;text-align:center;box-shadow:0 0 12px rgba(0,255,255,0.3);}
-    .welcome-message p{margin:0;color:#e0f7fa;}
-    .last-winner-btn{margin-top:10px;padding:10px 20px;background:linear-gradient(90deg,#4facfe,#00f2fe);color:#000;font-weight:bold;border:none;border-radius:25px;cursor:pointer;transition:all 0.3s;font-size:14px;box-shadow:0 0 10px cyan,0 0 20px #00f2fe;}
-    .last-winner-btn:hover{transform:scale(1.05);box-shadow:0 0 20px #4facfe,0 0 40px cyan;}
-    .prize-info{background:linear-gradient(145deg,#1f2937,#0d1117);padding:15px;border-radius:12px;margin-bottom:20px;text-align:center;border:2px dashed #00f2fe;position:relative;box-shadow:inset 0 0 20px rgba(0,255,255,0.2);}
-    .prize-info h2{color:#4facfe;margin-bottom:8px;font-size:22px;text-shadow:0 0 8px cyan;}
-    .prize-info p{color:#00f2fe;font-weight:600;}
-    .blocks-container{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-    .block{background:linear-gradient(145deg,#1f2937,#0d1117);border:2px solid #00f2fe;border-radius:10px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:15px 5px;min-height:85px;transition:all 0.3s ease;cursor:pointer;position:relative;overflow:hidden;box-shadow:0 0 10px rgba(0,255,255,0.2);}
-    .block:hover{transform:translateY(-5px) scale(1.05);box-shadow:0 0 25px cyan,0 0 40px #00f2fe;}
-    .block-numbers{font-size:15px;font-weight:bold;margin-bottom:5px;text-align:center;color:#00f2fe;text-shadow:0 0 6px cyan;}
-    .block-animal{font-size:12px;text-align:center;font-weight:600;color:#4facfe;}
-    .block.reserved{background:linear-gradient(145deg,#2d0a0a,#1a0000);color:#fff;border-color:#ff1744;box-shadow:0 0 15px #ff1744,0 0 30px #ff1744;cursor:not-allowed;}
-    .block.winner{background:linear-gradient(145deg,#2e7d32,#1b5e20);color:#fff;border-color:#66bb6a;box-shadow:0 0 20px #00e676,0 0 35px #00e676;animation:pulse 2s infinite;}
-    @keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.07);}100%{transform:scale(1);}}
-    .winner-section{background:linear-gradient(145deg,#1f2937,#0d1117);padding:15px;border-radius:12px;margin-top:20px;text-align:center;border-left:5px solid #00f2fe;box-shadow:0 0 20px rgba(0,255,255,0.25);}
-    .winner-section h3{color:#4facfe;margin-bottom:10px;}
-    .confirmation-section{margin-top:25px;padding:20px;background:linear-gradient(145deg,#0d1117,#1f2937);border-radius:12px;border-left:5px solid #00f2fe;display:none;text-align:center;box-shadow:0 0 20px rgba(0,255,255,0.25);}
-    .confirmation-message{margin-bottom:20px;font-weight:bold;color:#e0f7fa;}
-    .btn{padding:12px 25px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;transition:all 0.3s;font-size:16px;min-width:100px;}
-    .btn-yes{background:linear-gradient(90deg,#00f2fe,#4facfe);color:#000;box-shadow:0 0 15px cyan;}
-    .btn-yes:hover{transform:scale(1.05);box-shadow:0 0 30px cyan;}
-    .btn-no{background:linear-gradient(90deg,#ff1744,#ff5252);color:white;box-shadow:0 0 15px #ff1744;}
-    .btn-no:hover{transform:scale(1.05);box-shadow:0 0 30px #ff5252;}
-    .no-winner{font-style:italic;color:#b0bec5;}
-    #winnerNumber{font-size:18px;color:#00f2fe;font-weight:bold;text-shadow:0 0 8px cyan;}
-    .footer-note{text-align:center;margin-top:20px;color:#90caf9;font-size:14px;text-shadow:0 0 8px #00f2fe;}
-    .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.85);z-index:1000;justify-content:center;align-items:center;}
-    .modal-content{background-color:#111827;padding:20px;border-radius:12px;max-width:90%;max-height:90%;text-align:center;box-shadow:0 0 25px cyan;}
-    .modal h2{color:#00f2fe;text-shadow:0 0 8px cyan;}
-    .modal-img{max-width:100%;max-height:70vh;border-radius:10px;box-shadow:0 0 20px #00f2fe;}
-    .close-modal{margin-top:15px;padding:10px 20px;background:linear-gradient(90deg,#4facfe,#00f2fe);color:black;border:none;border-radius:8px;cursor:pointer;font-weight:bold;box-shadow:0 0 15px cyan;}
-    .close-modal:hover{transform:scale(1.05);box-shadow:0 0 30px cyan;}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super EPTV Marcos TV</title>
+<style>
+  body { font-family: 'Rajdhani', sans-serif; background:#0a0a1a; color:#fff; margin:0; }
+  header { text-align:center; padding:40px 20px 20px; }
+  header h1 { font-size:3rem; color:#00f3ff; text-shadow:0 0 10px #00f3ff,0 0 20px #ff00ff; }
+  header p { color:#ff00ff; margin-top:10px; font-size:1.2rem; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; max-width:1200px; margin:40px auto; padding:0 20px; }
+  .canal { background:rgba(10,10,26,0.8); border:1px solid #00f3ff; border-radius:10px; padding:20px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; transition:transform 0.3s ease, box-shadow 0.3s ease; }
+  .canal:hover { transform:translateY(-5px); box-shadow:0 0 20px #00f3ff,0 0 40px #ff00ff; }
+  .canal h2 { font-size:1.2rem; margin-bottom:15px; text-align:center; }
+  .canal a { text-decoration:none; background:#00f3ff; color:#0a0a1a; padding:10px 20px; border-radius:5px; font-weight:700; transition:background 0.3s ease; }
+  .canal a:hover { background:#ff00ff; color:#fff; }
+  @media(max-width:768px) { header h1 { font-size:2rem; } .canal h2 { font-size:1rem; } }
+  textarea { width:90%; height:150px; margin:20px auto; display:block; background:#111; color:#0ff; border:none; padding:10px; font-family:monospace; }
+  button { display:block; margin:0 auto 40px; padding:10px 20px; font-size:1rem; font-weight:700; border:none; border-radius:5px; background:#ff00ff; color:#fff; cursor:pointer; }
+  button:hover { background:#00f3ff; color:#0a0a1a; }
+</style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>RIFA RESPONSÁVEL VITOR</h1>
-    <p>RESULTADO DO JOGO DO BICHO 19h - BA ASSIM QUE ENCHER</p>
-  </div>
-  
-  <div class="welcome-message">
-    <p><strong>Seja bem-vindo!</strong> Clique no grupo que deseja e em seguida escolha SIM ou NÃO para enviar e deixar reservado aqui na página. Obrigado a todos pela contribuição!</p>
-    <button class="last-winner-btn" id="showWinnerBtn">Clique aqui para ver o último ganhador</button>
-  </div>
-  
-  <div class="prize-info">
-    <h2>Prêmio: R$ <span id="premiumValue"></span>,00</h2>
-    <p>Valor por cota: R$ <span id="ticketValue"></span>,00</p>
-  </div>
-  
-  <div class="blocks-container" id="blocksContainer"></div>
-  
-  <div class="winner-section">
-    <h3>Número Sorteado</h3>
-    <p><strong id="winnerNumber" class="no-winner">Aguardando sorteio...</strong></p>
-  </div>
-  
-  <div class="confirmation-section" id="confirmationSection">
-    <div class="confirmation-message" id="confirmationMessage"></div>
-    <div class="confirmation-buttons">
-      <button class="btn btn-yes" id="btnYes">Sim</button>
-      <button class="btn btn-no" id="btnNo">Não</button>
-    </div>
-  </div>
-</div>
 
-<div class="modal" id="winnerModal">
-  <div class="modal-content">
-    <h2>Último Ganhador</h2>
-    <img class="modal-img" src="https://i.ibb.co/2xzJH6f/Picsart-25-08-24-14-33-04-951.jpg" alt="Último ganhador da rifa">
-    <button class="close-modal" id="closeModal">Fechar</button>
-  </div>
-</div>
+<header>
+  <h1>Super EPTV Marcos TV</h1>
+  <p>Cole os links abaixo e clique em "Gerar canais"</p>
+</header>
 
-<div class="footer-note">
-  RIFA  © 2025 - Todos os direitos reservados mrc
-</div>
+<textarea id="links" placeholder="https://embedcanais.com/adultswim
+https://embedcanais.com/aee
+https://embedcanais.com/amc
+https://embedcanais.com/animalplanet
+https://embedcanais.com/axn
+https://embedcanais.com/bandnews
+https://embedcanais.com/bandsp
+https://embedcanais.com/bandsports
+https://embedcanais.com/canalgoat
+https://embedcanais.com/cancaonova
+https://embedcanais.com/cartoonito
+https://embedcanais.com/cartoonnetwork
+https://embedcanais.com/cazetv
+https://embedcanais.com/cinemax
+https://embedcanais.com/cnnbrasil
+https://embedcanais.com/combate
+https://embedcanais.com/comedycentral
+https://embedcanais.com/dazn
+https://embedcanais.com/discoverychannel
+https://embedcanais.com/discoveryhh
+https://embedcanais.com/discoveryid
+https://embedcanais.com/discoverykids
+https://embedcanais.com/discoveryscience
+https://embedcanais.com/discoverytheater
+https://embedcanais.com/discoveryturbo
+https://embedcanais.com/discoveryworld
+https://embedcanais.com/disneyplus
+https://embedcanais.com/espn
+https://embedcanais.com/espn2
+https://embedcanais.com/espn3
+https://embedcanais.com/espn4
+https://embedcanais.com/espn5
+https://embedcanais.com/espn6
+https://embedcanais.com/estreladacasa1
+https://embedcanais.com/estreladacasa2
+https://embedcanais.com/estreladacasa3
+https://embedcanais.com/estreladacasa4
+https://embedcanais.com/estreladacasa5
+https://embedcanais.com/foodnetwork
+https://embedcanais.com/globodf
+https://embedcanais.com/globomg
+https://embedcanais.com/globonews
+https://embedcanais.com/globoplaynovelas
+https://embedcanais.com/globorj
+https://embedcanais.com/globors
+https://embedcanais.com/globosp
+https://embedcanais.com/gloob
+https://embedcanais.com/gloobinho
+https://embedcanais.com/gnt
+https://embedcanais.com/hbo
+https://embedcanais.com/hbo2
+https://embedcanais.com/hbofamily
+https://embedcanais.com/hbomundi
+https://embedcanais.com/hboplus
+https://embedcanais.com/hbopop
+https://embedcanais.com/hbosignature
+https://embedcanais.com/hboxtreme
+https://embedcanais.com/hgtv
+https://embedcanais.com/history
+https://embedcanais.com/history2
+https://embedcanais.com/jovempannews
+https://embedcanais.com/lifetime
+https://embedcanais.com/max
+https://embedcanais.com/megapix
+https://embedcanais.com/mtv
+https://embedcanais.com/multishow
+https://embedcanais.com/nickelodeon
+https://embedcanais.com/nickjr
+https://embedcanais.com/nossofutebol
+https://embedcanais.com/novotempo
+https://embedcanais.com/paieterno
+https://embedcanais.com/paramountnetwork
+https://embedcanais.com/premiere
+https://embedcanais.com/premiere2
+https://embedcanais.com/premiere3
+https://embedcanais.com/premiere4
+https://embedcanais.com/premiere5
+https://embedcanais.com/premiere6
+https://embedcanais.com/premiere7
+https://embedcanais.com/premiere8
+https://embedcanais.com/recordmg
+https://embedcanais.com/recordnews
+https://embedcanais.com/recordrj
+https://embedcanais.com/recordsp
+https://embedcanais.com/redegospel
+https://embedcanais.com/redevida
+https://embedcanais.com/redetv
+https://embedcanais.com/sbtsp
+https://embedcanais.com/sonychannel
+https://embedcanais.com/space
+https://embedcanais.com/sportv
+https://embedcanais.com/sportv2
+https://embedcanais.com/sportv3
+https://embedcanais.com/studiouniversal
+https://embedcanais.com/tcaction
+https://embedcanais.com/tccult
+https://embedcanais.com/tcfun
+https://embedcanais.com/tcpipoca
+https://embedcanais.com/tcpremium
+https://embedcanais.com/tctouch
+https://embedcanais.com/tnt
+https://embedcanais.com/tntnovelas
+https://embedcanais.com/tntseries
+https://embedcanais.com/tooncast
+https://embedcanais.com/tvaparecida
+https://embedcanais.com/tvcultura
+https://embedcanais.com/tvevangelizar
+https://embedcanais.com/ufcfightpass
+https://embedcanais.com/universaltv
+https://embedcanais.com/warner
+https://embedcanais.com/amazonprimevideo
+https://embedcanais.com/nsports
+https://embedcanais.com/xsports
+https://www.embedtv.net/embed/a-e
+https://www.embedtv.net/embed/adult-swim
+https://www.embedtv.net/embed/amazon-prime-video
+https://www.embedtv.net/embed/amc
+https://www.embedtv.net/embed/animal-planet
+https://www.embedtv.net/embed/axn
+https://www.embedtv.net/embed/band
+https://www.embedtv.net/embed/band-mg
+https://www.embedtv.net/embed/band-news
+https://www.embedtv.net/embed/band-rj
+https://www.embedtv.net/embed/band-sports
+https://www.embedtv.net/embed/bis
+https://www.embedtv.net/embed/canal-brasil
+https://www.embedtv.net/embed/canal-goat
+https://www.embedtv.net/embed/canal-off
+https://www.embedtv.net/embed/cartoon-network
+https://www.embedtv.net/embed/cartoonito
+https://www.embedtv.net/embed/caze-tv
+https://www.embedtv.net/embed/caze-tv-2
+https://www.embedtv.net/embed/caze-tv-3
+https://www.embedtv.net/embed/cinemax
+https://www.embedtv.net/embed/cnbc
+https://www.embedtv.net/embed/cnn-brasil
+https://www.embedtv.net/embed/combate
+https://www.embedtv.net/embed/comedy-central
+https://www.embedtv.net/embed/discovery-channel
+https://www.embedtv.net/embed/discovery-home-health
+https://www.embedtv.net/embed/discovery-kids
+https://www.embedtv.net/embed/discovery-science
+https://www.embedtv.net/embed/discovery-theater
+https://www.embedtv.net/embed/discovery-turbo
+https://www.embedtv.net/embed/discovery-world
+https://www.embedtv.net/embed/disney-plus-eventos
+https://www.embedtv.net/embed/foxdeportes
+https://www.embedtv.net/embed/espn
+https://www.embedtv.net/embed/espn-2
+https://www.embedtv.net/embed/espn-3
+https://www.embedtv.net/embed/espn-4
+https://www.embedtv.net/embed/espn-5
+https://www.embedtv.net/embed/espn-6
+https://www.embedtv.net/embed/estreladacasa
+https://www.embedtv.net/embed/estreladacasa2
+https://www.embedtv.net/embed/estreladacasa3
+https://www.embedtv.net/embed/estreladacasa4
+https://www.embedtv.net/embed/estreladacasa5
+https://www.embedtv.net/embed/estreladacasa6
+https://www.embedtv.net/embed/food-network
+https://www.embedtv.net/embed/futura
+https://www.embedtv.net/embed/globo-bahia
+https://www.embedtv.net/embed/globo-news
+https://www.embedtv.net/embed/globo-nordeste
+https://www.embedtv.net/embed/globo-rj
+https://www.embedtv.net/embed/globo-sp
+https://www.embedtv.net/embed/globoplay-novelas
+https://www.embedtv.net/embed/gloob
+https://www.embedtv.net/embed/gloobinho
+https://www.embedtv.net/embed/gnt
+https://www.embedtv.net/embed/hbo
+https://www.embedtv.net/embed/hbo-2
+https://www.embedtv.net/embed/hbo-family
+https://www.embedtv.net/embed/hbo-mundi
+https://www.embedtv.net/embed/hbo-plus
+https://www.embedtv.net/embed/hbo-pop
+https://www.embedtv.net/embed/hbo-signature
+https://www.embedtv.net/embed/hbo-xtreme
+https://www.embedtv.net/embed/hgtv
+https://www.embedtv.net/embed/history
+https://www.embedtv.net/embed/history-2
+https://www.embedtv.net/embed/id-discovery
+https://www.embedtv.net/embed/jp-news
+https://www.embedtv.net/embed/lifetime
+https://www.embedtv.net/embed/max
+https://www.embedtv.net/embed/megapix
+https://www.embedtv.net/embed/modo-viagem
+https://www.embedtv.net/embed/mtv
+https://www.embedtv.net/embed/multishow
+https://www.embedtv.net/embed/nick-jr
+https://www.embedtv.net/embed/nickelodeon
+https://www.embedtv.net/embed/nosso-futebol
+https://www.embedtv.net/embed/nsports
+https://www.embedtv.net/embed/paramount
+https://www.embedtv.net/embed/premiere
+https://www.embedtv.net/embed/premiere-2
+https://www.embedtv.net/embed/premiere-3
+https://www.embedtv.net/embed/premiere-4
+https://www.embedtv.net/embed/premiere-5
+https://www.embedtv.net/embed/premiere-6
+https://www.embedtv.net/embed/premiere-7
+https://www.embedtv.net/embed/premiere-8
+https://www.embedtv.net/embed/abola
+https://www.embedtv.net/embed/pt-btv
+https://www.embedtv.net/embed/canal11
+https://www.embedtv.net/embed/pt-eleven
+https://www.embedtv.net/embed/pt-eleven-2
+https://www.embedtv.net/embed/pt-eleven-3
+https://www.embedtv.net/embed/pt-eleven-4
+https://www.embedtv.net/embed/pt-eleven-5
+https://www.embedtv.net/embed/pt-eurosport
+https://www.embedtv.net/embed/pt-eurosport-2
+https://www.embedtv.net/embed/sportvpt
+https://www.embedtv.net/embed/sportv-pt-2
+https://www.embedtv.net/embed/sportv-pt-3
+https://www.embedtv.net/embed/sportv-pt-4
+https://www.embedtv.net/embed/sportv-pt-5
+https://www.embedtv.net/embed/sportv-pt-6
+https://www.embedtv.net/embed/sportv-pt-7
+https://www.embedtv.net/embed/sportv-nba
+https://www.embedtv.net/embed/record
+https://www.embedtv.net/embed/record-brasilia
+https://www.embedtv.net/embed/record-minas
+https://www.embedtv.net/embed/record-news
+https://www.embedtv.net/embed/record-rj
+https://www.embedtv.net/embed/rede-tv
+https://www.embedtv.net/embed/sbt
+https://www.embedtv.net/embed/sony-channel
+https://www.embedtv.net/embed/sony-movies
+https://www.embedtv.net/embed/space
+https://www.embedtv.net/embed/sportv
+https://www.embedtv.net/embed/sportv-2
+https://www.embedtv.net/embed/sportv-3
+https://www.embedtv.net/embed/sportynet
+https://www.embedtv.net/embed/sportynet-2
+https://www.embedtv.net/embed/studio-universal
+https://www.embedtv.net/embed/tcm
+https://www.embedtv.net/embed/telecine-action
+https://www.embedtv.net/embed/telecine-cult
+https://www.embedtv.net/embed/telecine-fun
+https://www.embedtv.net/embed/telecine-pipoca
+https://www.embedtv.net/embed/telecine-premium
+https://www.embedtv.net/embed/telecine-touch
+https://www.embedtv.net/embed/tlc
+https://www.embedtv.net/embed/tnt
+https://www.embedtv.net/embed/tnt-novelas
+https://www.embedtv.net/embed/tnt-series
+https://www.embedtv.net/embed/tooncast
+https://www.embedtv.net/embed/ufc-fight-pass
+https://www.embedtv.net/embed/universal-tv
+https://www.embedtv.net/embed/usa
+https://www.embedtv.net/embed/foxsports
+https://www.embedtv.net/embed/foxsports2
+https://www.embedtv.net/embed/warner-channel
+https://la14hd.com/vivo/canales.php?stream=espn
+https://la14hd.com/vivo/canales.php?stream=espn2
+https://la14hd.com/vivo/canales.php?stream=espn3
+https://la14hd.com/vivo/canales.php?stream=espn4
+https://la14hd.com/vivo/canales.php?stream=espn5
+https://la14hd.com/vivo/canales.php?stream=espn6
+https://la14hd.com/vivo/canales.php?stream=espn7
+https://la14hd.com/vivo/canales.php?stream=dsports
+https://la14hd.com/vivo/canales.php?stream=dsports2
+https://la14hd.com/vivo/canales.php?stream=dsportsplus
+https://la14hd.com/vivo/canales.php?stream=goltv
+https://la14hd.com/vivo/canales.php?stream=vtvplus
+https://la14hd.com/vivo/canales.php?stream=ecdf_ligapro
+https://la14hd.com/vivo/canales.php?stream=foxsports
+https://la14hd.com/vivo/canales.php?stream=foxsports2
+https://la14hd.com/vivo/canales.php?stream=foxsports3
+https://la14hd.com/vivo/canales.php?stream=tntsports
+https://la14hd.com/vivo/canales.php?stream=espnpremium
+https://la14hd.com/vivo/canales.php?stream=tycsports
+https://la14hd.com/vivo/canales.php?stream=tycinternacional
+https://la14hd.com/vivo/canales.php?stream=telefe
+https://la14hd.com/vivo/canales.php?stream=tvpublica
+https://la14hd.com/vivo/canales.php?stream=golperu
+https://la14hd.com/vivo/canales.php?stream=liga1max
+https://la14hd.com/vivo/canales.php?stream=movistar
+https://la14hd.com/vivo/canales.php?stream=winsportsplus
+https://la14hd.com/vivo/canales.php?stream=winsports2
+https://la14hd.com/vivo/canales.php?stream=winsports
+https://la14hd.com/vivo/canales.php?stream=foxsportsmx
+https://la14hd.com/vivo/canales.php?stream=foxsports2mx
+https://la14hd.com/vivo/canales.php?stream=foxsports3mx
+https://la14hd.com/vivo/canales.php?stream=foxsportspremium
+https://la14hd.com/vivo/canales.php?stream=tudn_mx
+https://la14hd.com/vivo/canales.php?stream=espnmx
+https://la14hd.com/vivo/canales.php?stream=espn2mx
+https://la14hd.com/vivo/canales.php?stream=espn3mx
+https://la14hd.com/vivo/canales.php?stream=espn4mx
+https://la14hd.com/vivo/canales.php?stream=calientetv
+https://la14hd.com/vivo/canales.php?stream=azteca7
+https://la14hd.com/vivo/canales.php?stream=canal5
+https://la14hd.com/vivo/canales.php?stream=tvc_deportes
+https://la14hd.com/vivo/canales.php?stream=azteca_deportes
+https://la14hd.com/vivo/canales.php?stream=hisports
+https://la14hd.com/vivo/canales.php?stream=sky_sports_laliga
+https://la14hd.com/vivo/canales.php?stream=sky_bundesliga_mx
+https://la14hd.com/vivo/canales.php?stream=foxdeportes
+https://la14hd.com/vivo/canales.php?stream=espndeportes
+https://la14hd.com/vivo/canales.php?stream=tudn
+https://la14hd.com/vivo/canales.php?stream=univision
+https://la14hd.com/vivo/canales.php?stream=foxsports1_usa
+https://la14hd.com/vivo/canales.php?stream=foxsports2_usa
+https://la14hd.com/vivo/canales.php?stream=universo
+https://la14hd.com/vivo/canales.php?stream=beinsportes
+https://la14hd.com/vivo/canales.php?stream=unimas
+https://la14hd.com/vivo/canales.php?stream=beinsport_xtra_espanol
+https://la14hd.com/vivo/canales.php?stream=espn_usa
+https://la14hd.com/vivo/canales.php?stream=espn2_usa
+https://la14hd.com/vivo/canales.php?stream=espnu
+https://la14hd.com/vivo/canales.php?stream=cbs_sports_network
+https://la14hd.com/vivo/canales.php?stream=usanetwork
+https://la14hd.com/vivo/canales.php?stream=telemundo
+https://la14hd.com/vivo/canales.php?stream=eventos13
+https://la14hd.com/vivo/canales.php?stream=premiere1
+https://la14hd.com/vivo/canales.php?stream=premiere2
+https://la14hd.com/vivo/canales.php?stream=premiere3
+https://la14hd.com/vivo/canales.php?stream=premiere4
+https://la14hd.com/vivo/canales.php?stream=premiere5
+https://la14hd.com/vivo/canales.php?stream=premiere6
+https://la14hd.com/vivo/canales.php?stream=premiere7
+https://la14hd.com/vivo/canales.php?stream=premiere8
+https://la14hd.com/vivo/canales.php?stream=sportv
+https://la14hd.com/vivo/canales.php?stream=sportv2
+https://la14hd.com/vivo/canales.php?stream=sportv3
+https://la14hd.com/vivo/canales.php?stream=sporttv1
+https://la14hd.com/vivo/canales.php?stream=sporttv2
+https://la14hd.com/vivo/canales.php?stream=sporttv3
+https://la14hd.com/vivo/canales.php?stream=sporttv4
+https://la14hd.com/vivo/canales.php?stream=sporttv5
+https://la14hd.com/vivo/canales.php?stream=sporttv6
+https://la14hd.com/vivo/canales.php?stream=canal11_pt
+https://la14hd.com/vivo/canales.php?stream=eleven1_pt
+https://la14hd.com/vivo/canales.php?stream=eleven2_pt
+https://la14hd.com/vivo/canales.php?stream=eleven3_pt
+https://la14hd.com/vivo/canales.php?stream=eleven4_pt
+https://la14hd.com/vivo/canales.php?stream=eleven5_pt
+https://la14hd.com/vivo/canales.php?stream=eleven6_pt
+https://la14hd.com/vivo/canales.php?stream=dazn1
+https://la14hd.com/vivo/canales.php?stream=dazn2
+https://la14hd.com/vivo/canales.php?stream=dazn3
+https://la14hd.com/vivo/canales.php?stream=dazn4
+https://la14hd.com/vivo/canales.php?stream=dazn_laliga
+https://la14hd.com/vivo/canales.php?stream=la1tve
+https://la14hd.com/vivo/canales.php?stream=ligadecampeones1
+https://la14hd.com/vivo/canales.php?stream=ligadecampeones2
+https://la14hd.com/vivo/canales.php?stream=ligadecampeones3
+https://la14hd.com/vivo/canales.php?stream=m_laligatv
+https://la14hd.com/vivo/canales.php?stream=laligatvbar
+https://la14hd.com/vivo/canales.php?stream=sky_bundesliga1
+https://la14hd.com/vivo/canales.php?stream=sky_bundesliga2
+https://la14hd.com/vivo/canales.php?stream=sky_bundesliga3
+https://la14hd.com/vivo/canales.php?stream=sky_bundesliga4
+https://la14hd.com/vivo/canales.php?stream=sky_bundesliga5
+https://la14hd.com/vivo/canales.php?stream=dazn1_de
+https://la14hd.com/vivo/canales.php?stream=dazn2_de
+https://la14hd.com/vivo/canales.php?stream=espn1_nl
+https://la14hd.com/vivo/canales.php?stream=espn2_nl
+https://la14hd.com/vivo/canales.php?stream=espn3_nl
+https://la14hd.com/vivo/canales.php?stream=elevenpro1_be
+https://streamtp11.com/global1.php?stream=espn
+https://streamtp11.com/global1.php?stream=espn2
+https://streamtp11.com/global1.php?stream=espn3
+https://streamtp11.com/global1.php?stream=espn4
+https://streamtp11.com/global1.php?stream=espn5
+https://streamtp11.com/global1.php?stream=espn6
+https://streamtp11.com/global1.php?stream=espn7
+https://streamtp11.com/global1.php?stream=winplus
+https://streamtp11.com/global1.php?stream=winplus2
+https://streamtp11.com/global1.php?stream=winsports
+https://streamtp11.com/global1.php?stream=winplusonline1
+https://streamtp11.com/global1.php?stream=fox1ar
+https://streamtp11.com/global1.php?stream=fox2ar
+https://streamtp11.com/global1.php?stream=fox3ar
+https://streamtp11.com/global1.php?stream=dsports
+https://streamtp11.com/global1.php?stream=dsports2
+https://streamtp11.com/global1.php?stream=dsportsplus
+https://streamtp11.com/global1.php?stream=tntsportschile
+https://streamtp11.com/global1.php?stream=tntsports
+https://streamtp11.com/global1.php?stream=espnpremium
+https://streamtp11.com/global1.php?stream=tycsports
+https://streamtp11.com/global1.php?stream=telefe
+https://streamtp11.com/global1.php?stream=tv_publica
+https://streamtp11.com/global1.php?stream=liga1max
+https://streamtp11.com/global1.php?stream=goltv
+https://streamtp11.com/global1.php?stream=vtvplus
+https://streamtp11.com/global1.php?stream=golperu
+https://streamtp11.com/global1.php?stream=espndeportes
+https://streamtp11.com/global1.php?stream=tudn_usa
+https://streamtp11.com/global1.php?stream=fox_1_usa
+https://streamtp11.com/global1.php?stream=fox_2_usa
+https://streamtp11.com/global1.php?stream=universo_usa
+https://streamtp11.com/global1.php?stream=univision_usa
+https://streamtp11.com/global1.php?stream=fox_deportes_usa
+https://streamtp11.com/global1.php?stream=azteca_deportes
+https://streamtp11.com/global1.php?stream=foxsportsmx
+https://streamtp11.com/global1.php?stream=foxsports2mx
+https://streamtp11.com/global1.php?stream=foxsports3mx
+https://streamtp11.com/global1.php?stream=foxsportspremium
+https://streamtp11.com/global1.php?stream=espnmx
+https://streamtp11.com/global1.php?stream=espn2mx
+https://streamtp11.com/global1.php?stream=espn3mx
+https://streamtp11.com/global1.php?stream=tvc_deportes
+https://streamtp11.com/global1.php?stream=hisports
+https://streamtp11.com/global1.php?stream=dazn1
+https://streamtp11.com/global1.php?stream=dazn2
+https://streamtp11.com/global1.php?stream=dazn_laliga
+https://streamtp11.com/global1.php?stream=movistarligadecampeones
+https://streamtp11.com/global1.php?stream=caracoltv
+https://streamtp11.com/global1.php?stream=tnt_1_gb
+https://streamtp11.com/global1.php?stream=tnt_2_gb
+https://streamtp11.com/global1.php?stream=tnt_3_gb
+https://streamtp11.com/global1.php?stream=tnt_4_gb
+https://streamtp11.com/global1.php?stream=sporttvbr1
+https://streamtp11.com/global1.php?stream=sporttvbr2
+https://streamtp11.com/global1.php?stream=sporttvbr3
+https://streamtp11.com/global1.php?stream=premiere1
+https://streamtp11.com/global1.php?stream=premiere2
+https://streamtp11.com/global1.php?stream=premiere3
+https://streamtp11.com/global1.php?stream=espn_nl1
+https://streamtp11.com/global1.php?stream=espn_nl2
+https://streamtp11.com/global1.php?stream=espn_nl3
+https://streamtp11.com/global1.php?stream=calientetvmx
+https://streamtp11.com/global1.php?stream=tsn1
+https://streamtp11.com/global1.php?stream=tsn2
+https://streamtp11.com/global1.php?stream=tsn3
+https://streamtp11.com/global1.php?stream=tsn4
+https://streamtp11.com/global1.php?stream=tsn5
+https://streamtp11.com/global1.php?stream=vamoses
+https://streamtp11.com/global1.php?stream=usa_network
+https://streamtp11.com/global1.php?stream=tycinternacional
+https://streamtp11.com/global1.php?stream=canal5mx
+https://streamtp11.com/global1.php?stream=TUDNMX
+https://streamtp11.com/global1.php?stream=futv
+https://streamtp11.com/global1.php?stream=espn1br
+https://streamtp11.com/global1.php?stream=espn2br
+https://streamtp11.com/global1.php?stream=espn3br
+https://streamtp11.com/global1.php?stream=espn4br
+https://streamtp11.com/global1.php?stream=laligahypermotion
+https://streamtp11.com/global1.php?stream=tubitv1
+https://streamtp11.com/global1.php?stream=grahermanocam1
+https://streamtp11.com/global1.php?stream=grahermanocam2
+https://streamtp11.com/global1.php?stream=grahermanocam3
+https://streamtp11.com/global1.php?stream=granhermanocamara24horas
+https://streamtp11.com/global1.php?stream=granhermanomulticam
+https://streamtp11.com/global1.php?stream=canal11_pt
+https://streamtp11.com/global1.php?stream=sportv_1pt
+https://streamtp11.com/global1.php?stream=sportv_2pt
+https://streamtp11.com/global1.php?stream=sportv_3pt
+https://streamtp11.com/global1.php?stream=sportv_4pt
+https://streamtp11.com/global1.php?stream=sporttv5
+https://streamtp11.com/global1.php?stream=sporttv6"></textarea>
+<button onclick="gerarCanais()">Gerar canais</button>
+
+<div class="grid" id="grid"></div>
 
 <script>
-function init() {
-  document.getElementById("premiumValue").textContent = config.premiumValue;
-  document.getElementById("ticketValue").textContent = config.ticketValue;
-  generateBlocks();
-  updateWinnerDisplay();
-  document.getElementById("btnYes").addEventListener("click", confirmSelection);
-  document.getElementById("btnNo").addEventListener("click", cancelSelection);
-  document.getElementById("showWinnerBtn").addEventListener("click", showWinner);
-  document.getElementById("closeModal").addEventListener("click", closeWinnerModal);
+function gerarCanais() {
+  const grid = document.getElementById('grid');
+  const textarea = document.getElementById('links');
+  const links = textarea.value.split('\n').filter(l => l.trim() !== '');
+  grid.innerHTML = ''; // limpa grid antes de gerar
+
+  links.forEach(link => {
+    let nome = link.split('/').pop(); // pega última parte do link como nome
+    nome = decodeURIComponent(nome).replace(/[-_]/g,' ').toUpperCase(); // transforma em nome legível
+
+    const div = document.createElement('div');
+    div.classList.add('canal');
+
+    const h2 = document.createElement('h2');
+    h2.textContent = nome;
+
+    const a = document.createElement('a');
+    a.href = link;
+    a.target = "_blank";
+    a.textContent = "Clique aqui";
+
+    div.appendChild(h2);
+    div.appendChild(a);
+    grid.appendChild(div);
+  });
 }
-
-function parseReservedGroups(reservedString) {
-  const reservedArray = [];
-  const regex = /\[([^\]]*\.?[^\]]*)\]/g;
-  let match;
-  while ((match = regex.exec(reservedString)) !== null) {
-    const content = match[1];
-    if (content.includes('.')) {
-      const numberMatch = content.match(/\d+/);
-      if (numberMatch) {
-        const number = parseInt(numberMatch[0]);
-        if (!isNaN(number) && number >= 1 && number <= 25) reservedArray.push(number);
-      }
-    }
-  }
-  return reservedArray;
-}
-
-function generateBlocks() {
-  const container = document.getElementById("blocksContainer");
-  container.innerHTML = "";
-  const reservedGroups = parseReservedGroups(config.reservedGroups);
-
-  for (let i = 1; i <= 25; i++) {
-    const block = document.createElement("div");
-    block.className = "block";
-    block.dataset.block = i;
-
-    const startNum = (i - 1) * 4 + 1;
-    const numbers = [];
-    for (let j = 0; j < 4; j++) {
-      let num = startNum + j;
-      if (num > 100) num = num - 100;
-      if (num === 100) num = 0;
-      numbers.push(num.toString().padStart(2,"0"));
-    }
-
-    block.innerHTML = `<div class="block-numbers">${numbers.join("-")}</div><div class="block-animal">${animals[i-1]}</div>`;
-
-    if (reservedGroups.includes(i)) block.classList.add("reserved");
-    else block.addEventListener("click", ()=>{selectedGroup=i;generatedId=generateRandomId();showConfirmation(i,animals[i-1],numbers.join(", "),generatedId);});
-
-    if (config.winningNumber!==null && config.winningNumber!=="") {
-      let winningNumber = config.winningNumber===0?100:config.winningNumber;
-      let groupNumber = winningNumber%4===0?winningNumber/4:Math.ceil(winningNumber/4);
-      if (winningNumber===100) groupNumber=25;
-      if (i===groupNumber) {block.classList.add("winner");block.classList.remove("reserved");}
-    }
-    container.appendChild(block);
-  }
-}
-
-function showConfirmation(groupNumber, animalName, numbers, id) {
-  const msg=`Tem certeza que deseja reservar o grupo ${groupNumber} (${animalName}) com os números ${numbers}? Seu ID de confirmação é: ${id}`;
-  document.getElementById("confirmationMessage").textContent=msg;
-  document.getElementById("confirmationSection").style.display="block";
-  document.getElementById("confirmationSection").scrollIntoView({behavior:"smooth"});
-}
-
-function confirmSelection() {
-  if (selectedGroup && generatedId) {
-    const numbers = getNumbersForGroup(selectedGroup);
-    const animalName = animals[selectedGroup-1];
-    const idText=`GRUPO-${selectedGroup}-${animalName}-${generatedId}`;
-    navigator.clipboard.writeText(idText);
-    const message=encodeURIComponent(`Olá, gostaria de reservar o grupo ${selectedGroup} (${animalName})\nMeu ID de confirmação é: ${idText}\n\nChave PIX para pagamento:\n${config.pixKey}\n\naguardando o comprovante 🙏 acompanhe site aqui https://vitormrcrf.github.io/Vitormrcrf/`);
-    window.open(`https://wa.me/${config.whatsappNumber}?text=${message}`,'_blank');
-    document.getElementById("confirmationSection").style.display="none";
-    selectedGroup=null;
-    generatedId=null;
-  }
-}
-
-function cancelSelection(){document.getElementById("confirmationSection").style.display="none";selectedGroup=null;generatedId=null;}
-
-function getNumbersForGroup(groupNumber){
-  const startNum=(groupNumber-1)*4+1;
-  const numbers=[];
-  for(let j=0;j<4;j++){
-    let num=startNum+j;if(num>100)num=num-100;if(num===100)num=0;numbers.push(num.toString().padStart(2,"0"));
-  }
-  return numbers.join(", ");
-}
-
-function updateWinnerDisplay(){
-  const winnerElement=document.getElementById("winnerNumber");
-  if(config.winningNumber===null||config.winningNumber===""){winnerElement.textContent="Aguardando sorteio...";winnerElement.className="no-winner";return;}
-  let winningNumber=config.winningNumber===0?100:config.winningNumber;
-  let groupNumber=winningNumber%4===0?winningNumber/4:Math.ceil(winningNumber/4);
-  if(winningNumber===100)groupNumber=25;
-  const animalIndex=groupNumber>0&&groupNumber<=25?groupNumber-1:0;
-  const displayNumber=config.winningNumber===0?"00":config.winningNumber.toString().padStart(2,"0");
-  winnerElement.textContent=`${displayNumber} - ${animals[animalIndex]}`;
-  winnerElement.className="";
-}
-
-function generateRandomId(length=6){const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";let result="";for(let i=0;i<length;i++){result+=chars.charAt(Math.floor(Math.random()*chars.length));}return result;}
-
-function showWinner(){document.getElementById('winnerModal').style.display='flex';}
-function closeWinnerModal(){document.getElementById('winnerModal').style.display='none';}
-
-document.addEventListener("DOMContentLoaded", init);
 </script>
+
 </body>
 </html>
