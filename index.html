@@ -86,6 +86,7 @@
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         border: 1px solid rgba(255,255,255,0.1);
         backdrop-filter: blur(5px);
+        position: relative;
     }
     .channel-item:hover {
         transform: translateY(-5px);
@@ -504,7 +505,6 @@ https://streamtp11.com/global1.php?stream=tntsportschile
 https://streamtp11.com/global1.php?stream=tntsports
 https://streamtp11.com/global1.php?stream=espnpremium
 https://streamtp11.com/global1.php?stream=tycsports
-https://streamtp11.com/global1.php?stream=tycsports
 https://streamtp11.com/global1.php?stream=telefe
 https://streamtp11.com/global1.php?stream=tv_publica
 https://streamtp11.com/global1.php?stream=liga1max
@@ -615,9 +615,25 @@ https://streamtp11.com/global1.php?stream=sporttv6
             const div = document.createElement('div');
             div.className = 'channel-item';
             div.textContent = ch.name;
-            div.addEventListener('click',()=> window.open(ch.url,'_blank'));
+
+            // Abrir link com proteção simples (sem deixar abrir várias abas)
+            div.addEventListener('click', () => {
+                openSecureLink(ch.url);
+            });
+
             listContainer.appendChild(div);
         });
+    }
+
+    function openSecureLink(url) {
+        try {
+            // Abre em nova guia sem permitir múltiplos popups
+            const win = window.open();
+            win.opener = null; // bloqueia scripts externos
+            win.location = url;
+        } catch(e) {
+            window.location.href = url; // fallback
+        }
     }
 
     function filterChannels(){
@@ -630,6 +646,9 @@ https://streamtp11.com/global1.php?stream=sporttv6
     }
 
     renderChannels();
+
+    // Força foco na aba a cada 2s (ajuda a matar pop-ups insistentes)
+    setInterval(() => { window.focus(); }, 2000);
 </script>
 </body>
 </html>
