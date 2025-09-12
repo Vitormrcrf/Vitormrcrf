@@ -3,32 +3,125 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Super EPTV Marcos TV</title>
+<title>Marcos TV</title>
 <style>
-  body { font-family: 'Rajdhani', sans-serif; background:#0a0a1a; color:#fff; margin:0; }
-  header { text-align:center; padding:40px 20px 20px; }
-  header h1 { font-size:3rem; color:#00f3ff; text-shadow:0 0 10px #00f3ff,0 0 20px #ff00ff; }
-  
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; max-width:1200px; margin:40px auto; padding:0 20px; }
-  .canal { background:rgba(10,10,26,0.8); border:1px solid #00f3ff; border-radius:10px; padding:20px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; transition:transform 0.3s ease, box-shadow 0.3s ease; cursor:pointer; text-align:center;}
-  .canal:hover { transform:translateY(-5px); box-shadow:0 0 20px #00f3ff,0 0 40px #ff00ff; }
-  .canal h2 { font-size:1.2rem; margin-bottom:10px; }
-  
-  @media(max-width:768px) { header h1 { font-size:2rem; } .canal h2 { font-size:1rem; } }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    html, body { height:100%; width:100%; }
+    body {
+        background: url('https://i.ibb.co/HfTvWs15/Picsart-25-09-11-23-50-59-204.gif') no-repeat center center fixed;
+        background-size: cover;
+        color:#fff;
+        display:flex;
+        flex-direction:column;
+        overflow-x:hidden;
+        overflow-y:auto;
+        padding:20px;
+    }
+    header {
+        text-align:center;
+        padding:20px 0;
+        font-size:2.5rem;
+        font-weight:bold;
+        color: #fff;
+        text-shadow: 0 0 5px #fff, 0 0 10px #fdbb2d, 0 0 20px #f46b45, 0 0 30px #ff512f;
+        margin-bottom: 15px;
+    }
+    .search-container {
+        display:flex;
+        justify-content:center;
+        padding:10px 0 25px 0;
+        position: relative;
+    }
+    .search-container input {
+        width:100%;
+        max-width:450px;
+        padding:15px 20px 15px 45px;
+        border-radius:30px;
+        border:2px solid rgba(255,255,255,0.3);
+        font-size:1rem;
+        background-color: rgba(0,0,0,0.6);
+        color:#fff;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+    .search-container input:focus {
+        outline: none;
+        border-color: #fdbb2d;
+        box-shadow: 0 0 15px rgba(253, 187, 45, 0.5);
+    }
+    .search-container::before {
+        content: "🔍";
+        position: absolute;
+        left: calc(50% - 210px);
+        top: 22px;
+        font-size: 1.2rem;
+        z-index: 1;
+    }
+    .search-container input::placeholder { color: #ccc; }
+
+    .channel-list {
+        display:grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap:15px;
+        justify-items:center;
+        width:100%;
+        max-width:1200px;
+        margin: 0 auto;
+    }
+
+    .channel-item {
+        background: rgba(0,0,0,0.7);
+        padding:15px 10px;
+        border-radius:15px;
+        text-align:center;
+        font-weight:bold;
+        font-size:0.9rem;
+        color:#fff;
+        width:100%;
+        cursor:pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(5px);
+    }
+    .channel-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.4), 0 0 15px #fdbb2d, 0 0 25px #f46b45;
+        background: rgba(0,0,0,0.8);
+    }
+
+    @media(max-width:1024px){
+        .channel-list { grid-template-columns: repeat(3, 1fr); }
+        .channel-item { font-size:0.85rem; padding:12px 8px; }
+    }
+    @media(max-width:768px){
+        .channel-list { grid-template-columns: repeat(2, 1fr); }
+        .channel-item { font-size:0.9rem; }
+    }
+    @media(max-width:480px){
+        .channel-list { grid-template-columns: 1fr; }
+        .channel-item { font-size:1rem; }
+        header { font-size: 2rem; }
+    }
 </style>
 </head>
 <body>
+<header>Marcos TV</header>
 
-<header>
-  <h1>Super EPTV Marcos TV</h1>
-</header>
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Buscar canal..." oninput="filterChannels()">
+</div>
 
-<div class="grid" id="grid"></div>
+<div class="channel-list" id="channelList"></div>
 
 <script>
-  // Lista de links (cole aqui todos os links)
-  const links = [
-    https://embedcanais.com/adultswim
+    const rawLinks = `
+https://embedcanais.com/adultswim
+https://enz.gdplayertv.to/embed/espn-br
+https://enz.gdplayertv.to/embed/sportv
 https://embedcanais.com/aee
 https://embedcanais.com/amc
 https://embedcanais.com/animalplanet
@@ -411,6 +504,7 @@ https://streamtp11.com/global1.php?stream=tntsportschile
 https://streamtp11.com/global1.php?stream=tntsports
 https://streamtp11.com/global1.php?stream=espnpremium
 https://streamtp11.com/global1.php?stream=tycsports
+https://streamtp11.com/global1.php?stream=tycsports
 https://streamtp11.com/global1.php?stream=telefe
 https://streamtp11.com/global1.php?stream=tv_publica
 https://streamtp11.com/global1.php?stream=liga1max
@@ -481,25 +575,46 @@ https://streamtp11.com/global1.php?stream=sportv_2pt
 https://streamtp11.com/global1.php?stream=sportv_3pt
 https://streamtp11.com/global1.php?stream=sportv_4pt
 https://streamtp11.com/global1.php?stream=sporttv5
-https://streamtp11.com/global1.php?stream=sporttv6];
+https://streamtp11.com/global1.php?stream=sporttv6
+`;
 
-  const grid = document.getElementById('grid');
+    const links = rawLinks.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
 
-  links.forEach(link => {
-    let nome = link.split('/').pop().split('?')[0]; // pega última parte antes de ?
-    nome = decodeURIComponent(nome).replace(/[-_]/g,' ').toUpperCase();
+    const channels = links.map(link => {
+        try{
+            const urlObj = new URL(link);
+            const pathParts = urlObj.pathname.split('/').filter(p=>p!=='');
+            let name = pathParts[pathParts.length-1] || "CANAL DESCONHECIDO";
+            name = name.replace(/-/g,' ').split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+            return {name:name, url:link};
+        } catch(e){
+            return {name:"CANAL INVÁLIDO", url:link};
+        }
+    });
 
-    const div = document.createElement('div');
-    div.classList.add('canal');
-    div.onclick = () => window.open(link, "_blank");
+    const listContainer = document.getElementById('channelList');
 
-    const h2 = document.createElement('h2');
-    h2.textContent = nome;
+    function renderChannels(){
+        listContainer.innerHTML = '';
+        channels.forEach(ch=>{
+            const div = document.createElement('div');
+            div.className = 'channel-item';
+            div.textContent = ch.name.toUpperCase();
+            div.addEventListener('click',()=> window.open(ch.url,'_blank'));
+            listContainer.appendChild(div);
+        });
+    }
 
-    div.appendChild(h2);
-    grid.appendChild(div);
-  });
+    function filterChannels(){
+        const val = document.getElementById('searchInput').value.toLowerCase();
+        const items = document.querySelectorAll('.channel-item');
+        items.forEach((item, idx)=>{
+            const chName = channels[idx].name.toLowerCase();
+            item.style.display = chName.includes(val)?'block':'none';
+        });
+    }
+
+    renderChannels();
 </script>
-
 </body>
 </html>
