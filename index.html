@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MARCOS TV - EDIÇÃO VERMELHA RADICAL</title>
+<title>MARCOS TV - PLAYER AVANÇADO</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
     * { 
@@ -23,42 +23,39 @@
         color:#fff;
         display:flex;
         flex-direction:column;
-        overflow-x:hidden;
-        overflow-y:auto;
-        padding:20px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 15px;
     }
     
-    /* HEADER ESTILIZADO - TEMA VERMELHO */
+    /* HEADER ESTILIZADO */
     header {
         text-align:center;
-        padding:25px 0;
-        font-size:3rem;
+        padding:20px 0;
+        font-size:2.8rem;
         font-weight:900;
         color: #fff;
-        text-shadow: 0 0 5px #fff, 0 0 10px #ff003c, 0 0 20px #ff003c, 0 0 30px #ff003c;
-        margin-bottom: 20px;
+        text-shadow: 0 0 5px #fff, 0 0 10px #ff003c, 0 0 20px #ff003c;
+        margin-bottom: 15px;
         letter-spacing: 2px;
         font-family: 'Orbitron', sans-serif;
-        position: relative;
     }
     
-    header::after {
-        content: '';
-        position: absolute;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 200px;
-        height: 3px;
-        background: linear-gradient(90deg, transparent, #ff003c, #ff3366, transparent);
-        border-radius: 3px;
+    /* CONTAINER PRINCIPAL HORIZONTAL */
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        gap: 20px;
     }
     
-    /* BARRA DE PESQUISA RADICAL - TEMA VERMELHO */
+    /* BARRA DE PESQUISA */
     .search-container {
         display:flex;
         justify-content:center;
-        padding:15px 0 30px 0;
+        padding:10px 0 20px 0;
         position: relative;
     }
     
@@ -70,7 +67,7 @@
     
     .search-box input {
         width:100%;
-        padding:16px 20px 16px 50px;
+        padding:14px 20px 14px 45px;
         border-radius:50px;
         border:2px solid rgba(255,0,60,0.4);
         font-size:1rem;
@@ -87,16 +84,15 @@
         outline: none;
         border-color: #ff003c;
         box-shadow: 0 0 20px rgba(255,0,60,0.7);
-        background-color: rgba(0,0,0,0.8);
     }
     
     .search-icon {
         position: absolute;
-        left: 20px;
+        left: 18px;
         top: 50%;
         transform: translateY(-50%);
         color: #ff003c;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         z-index: 1;
     }
     
@@ -105,18 +101,38 @@
         letter-spacing: 0.5px;
     }
     
-    /* LISTA DE CANAIS RADICAL - HORIZONTAL */
-    .channel-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        justify-content: center;
+    /* CONTAINER DE CANAIS HORIZONTAL */
+    .channels-horizontal-container {
         width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
+        overflow-x: auto;
+        padding: 15px 10px;
+        margin-bottom: 20px;
+        scrollbar-width: thin;
+        scrollbar-color: #ff003c rgba(0,0,0,0.3);
     }
     
-    .channel-item {
+    .channels-horizontal-container::-webkit-scrollbar {
+        height: 8px;
+    }
+    
+    .channels-horizontal-container::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.3);
+        border-radius: 10px;
+    }
+    
+    .channels-horizontal-container::-webkit-scrollbar-thumb {
+        background: #ff003c;
+        border-radius: 10px;
+    }
+    
+    .channels-horizontal {
+        display: flex;
+        gap: 15px;
+        padding: 5px;
+    }
+    
+    /* CANAIS NA HORIZONTAL */
+    .channel-item-horizontal {
         background: rgba(0,0,0,0.75);
         padding: 15px 20px;
         border-radius: 12px;
@@ -124,52 +140,51 @@
         font-weight: 700;
         font-size: 0.9rem;
         color: #fff;
-        min-width: 180px;
+        min-width: 160px;
         cursor: pointer;
         transition: all 0.3s ease;
         letter-spacing: 1px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         border: 1px solid rgba(255,0,60,0.3);
         backdrop-filter: blur(8px);
+        flex-shrink: 0;
         position: relative;
         overflow: hidden;
-        font-family: 'Rajdhani', sans-serif;
-        flex: 1 0 auto;
     }
     
-    .channel-item::before {
+    .channel-item-horizontal::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 4px;
-        background: linear-gradient(90deg, #ff003c, #ff3366, #ff6699);
+        background: linear-gradient(90deg, #ff003c, #ff3366);
         opacity: 0.8;
         transition: all 0.3s ease;
     }
     
-    .channel-item:hover {
-        transform: translateY(-8px) scale(1.05);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(255,0,60,0.6);
+    .channel-item-horizontal:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 15px rgba(255,0,60,0.6);
         background: rgba(20,0,5,0.85);
         border-color: rgba(255,0,60,0.5);
     }
     
-    .channel-item:hover::before {
-        height: 6px;
+    .channel-item-horizontal:hover::before {
+        height: 5px;
         opacity: 1;
     }
     
-    /* OVERLAY DO PLAYER - TEMA VERMELHO */
+    /* OVERLAY DO PLAYER AVANÇADO */
     .player-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.97);
-        z-index: 9999;
+        background: rgba(0,0,0,0.98);
+        z-index: 10000;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -184,25 +199,39 @@
     }
     
     .player-container {
-        width: 90%;
-        height: 80%;
+        width: 95%;
+        height: 85%;
         position: relative;
-        border: 3px solid rgba(255,0,60,0.5);
-        border-radius: 10px;
+        border: 2px solid rgba(255,0,60,0.5);
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 0 30px rgba(255,0,60,0.4);
+        box-shadow: 0 0 40px rgba(255,0,60,0.5);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .player-header {
+        padding: 15px;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255,0,60,0.3);
+    }
+    
+    .player-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 0 5px #ff003c;
     }
     
     .player-controls {
-        position: absolute;
-        bottom: 15px;
-        right: 15px;
         display: flex;
         gap: 10px;
-        z-index: 10000;
     }
     
-    .player-btn {
+    .control-btn {
         width: 40px;
         height: 40px;
         border-radius: 50%;
@@ -214,36 +243,18 @@
         cursor: pointer;
         transition: all 0.3s ease;
         border: none;
-        font-size: 18px;
+        font-size: 16px;
     }
     
-    .player-btn:hover {
+    .control-btn:hover {
         background: rgba(255,0,60,1);
         transform: scale(1.1);
     }
     
-    .close-btn {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        font-size: 28px;
-        color: #fff;
-        background: rgba(255,0,60,0.7);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        z-index: 10000;
-        transition: all 0.3s ease;
-        border: none;
-    }
-    
-    .close-btn:hover {
-        background: rgba(255,0,60,1);
-        transform: rotate(90deg);
+    .player-content {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
     }
     
     .player-iframe {
@@ -252,151 +263,217 @@
         border: none;
     }
     
-    /* BOTÃO FULLSCREEN PERSONALIZADO */
-    .fullscreen-btn {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
+    /* POPUP DE CONTROLES DE TELA (Igual Samsung Internet) */
+    .screen-controls-popup {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.85);
+        border-radius: 25px;
+        padding: 12px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        z-index: 10001;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 0, 60, 0.4);
+        backdrop-filter: blur(10px);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .player-content:hover .screen-controls-popup {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .screen-control-btn {
+        width: 45px;
+        height: 45px;
         border-radius: 50%;
-        background: rgba(255,0,60,0.8);
+        background: rgba(255, 0, 60, 0.7);
         color: white;
         display: flex;
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        z-index: 1000;
         transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(255,0,60,0.4);
         border: none;
+        font-size: 18px;
+        position: relative;
     }
     
-    .fullscreen-btn:hover {
-        background: rgba(255,0,60,1);
+    .screen-control-btn:hover {
+        background: rgba(255, 0, 60, 1);
         transform: scale(1.1);
     }
     
+    .screen-control-btn.active {
+        background: rgba(255, 0, 60, 1);
+        box-shadow: 0 0 15px rgba(255, 0, 60, 0.8);
+    }
+    
+    .screen-control-btn .tooltip {
+        position: absolute;
+        bottom: -35px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+    
+    .screen-control-btn:hover .tooltip {
+        opacity: 1;
+        visibility: visible;
+        bottom: -30px;
+    }
+    
     /* RESPONSIVIDADE */
-    @media(max-width:1024px){
-        .channel-item { 
-            font-size:0.85rem; 
-            padding:14px 18px; 
-            min-width: 160px;
-        }
+    @media (max-width: 768px) {
         header {
-            font-size: 2.7rem;
+            font-size: 2.2rem;
         }
-    }
-    
-    @media(max-width:768px){
-        .channel-list { 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 12px;
-        }
-        .channel-item { 
-            font-size:0.9rem; 
+        
+        .channel-item-horizontal {
             min-width: 140px;
+            padding: 12px 15px;
+            font-size: 0.85rem;
         }
-        header {
-            font-size: 2.3rem;
+        
+        .player-container {
+            width: 98%;
+            height: 80%;
+        }
+        
+        .screen-controls-popup {
+            bottom: 10px;
+            right: 10px;
+            padding: 10px;
+        }
+        
+        .screen-control-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
         }
     }
     
-    @media(max-width:480px){
-        .channel-list { 
+    @media (max-width: 480px) {
+        header {
+            font-size: 1.8rem;
+            padding: 15px 0;
+        }
+        
+        .channel-item-horizontal {
+            min-width: 120px;
+            padding: 10px 12px;
+            font-size: 0.8rem;
+        }
+        
+        .player-header {
+            padding: 10px;
+        }
+        
+        .player-title {
+            font-size: 1rem;
+        }
+        
+        .control-btn {
+            width: 35px;
+            height: 35px;
+            font-size: 14px;
+        }
+        
+        .screen-controls-popup {
             flex-direction: column;
-            gap: 12px;
+            border-radius: 15px;
+            padding: 8px;
         }
-        .channel-item { 
-            font-size:0.9rem; 
-            padding: 15px;
-            min-width: auto;
-            width: 100%;
-        }
-        header { 
-            font-size: 2rem; 
-            padding: 20px 0;
-        }
-        .search-box input {
-            padding: 14px 15px 14px 45px;
-        }
-        .search-icon {
-            left: 15px;
-        }
-        .fullscreen-btn {
-            bottom: 20px;
-            right: 20px;
-            width: 45px;
-            height: 45px;
+        
+        .screen-control-btn {
+            width: 35px;
+            height: 35px;
+            font-size: 14px;
         }
     }
     
     /* ANIMAÇÕES */
     @keyframes glow {
-        0% { text-shadow: 0 0 5px #fff, 0 0 10px #ff003c, 0 0 15px #ff003c; }
-        50% { text-shadow: 0 0 10px #fff, 0 0 20px #ff003c, 0 0 30px #ff003c; }
-        100% { text-shadow: 0 0 5px #fff, 0 0 10px #ff003c, 0 0 15px #ff003c; }
+        0% { text-shadow: 0 0 5px #fff, 0 0 10px #ff003c; }
+        50% { text-shadow: 0 0 10px #fff, 0 0 20px #ff003c; }
+        100% { text-shadow: 0 0 5px #fff, 0 0 10px #ff003c; }
     }
     
     header {
-        animation: glow 3s infinite;
-    }
-    
-    /* SCROLLBAR PERSONALIZADA - TEMA VERMELHO */
-    ::-webkit-scrollbar {
-        width: 10px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: rgba(0,0,0,0.3);
-        border-radius: 10px;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: linear-gradient(to bottom, #ff003c, #ff3366);
-        border-radius: 10px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(to bottom, #ff3366, #ff6699);
+        animation: glow 2s infinite;
     }
 </style>
 </head>
 <body>
 <header>MARCOS TV</header>
 
-<div class="search-container">
-    <div class="search-box">
-        <div class="search-icon"><i class="fas fa-search"></i></div>
-        <input type="text" id="searchInput" placeholder="BUSCAR CANAL..." oninput="filterChannels()">
+<div class="main-container">
+    <div class="search-container">
+        <div class="search-box">
+            <div class="search-icon"><i class="fas fa-search"></i></div>
+            <input type="text" id="searchInput" placeholder="BUSCAR CANAL..." oninput="filterChannels()">
+        </div>
+    </div>
+
+    <div class="channels-horizontal-container">
+        <div class="channels-horizontal" id="channelsHorizontal"></div>
     </div>
 </div>
 
-<div class="channel-list" id="channelList"></div>
-
-<!-- Overlay do Player -->
+<!-- Overlay do Player Avançado -->
 <div class="player-overlay" id="playerOverlay">
-    <div class="player-container">
-        <div class="close-btn" id="closePlayer">
-            <i class="fas fa-times"></i>
+    <div class="player-container" id="playerContainer">
+        <div class="player-header">
+            <div class="player-title" id="playerTitle">ASSISTINDO CANAL</div>
+            <div class="player-controls">
+                <button class="control-btn" id="closePlayer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         </div>
-        <div class="player-controls">
-            <button class="player-btn" id="fullscreenBtn">
-                <i class="fas fa-expand"></i>
-            </button>
+        <div class="player-content">
+            <iframe class="player-iframe" id="playerIframe" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+            
+            <!-- Pop-up de controles de tela (como Samsung Internet) -->
+            <div class="screen-controls-popup">
+                <button class="screen-control-btn" id="sizeNormal">
+                    <i class="fas fa-compress"></i>
+                    <span class="tooltip">Tamanho Normal</span>
+                </button>
+                <button class="screen-control-btn" id="sizeMedium">
+                    <i class="fas fa-expand-alt"></i>
+                    <span class="tooltip">Tela Média</span>
+                </button>
+                <button class="screen-control-btn active" id="sizeFull">
+                    <i class="fas fa-expand"></i>
+                    <span class="tooltip">Tela Cheia</span>
+                </button>
+                <button class="screen-control-btn" id="pipMode">
+                    <i class="fas fa-clone"></i>
+                    <span class="tooltip">Picture-in-Picture</span>
+                </button>
+            </div>
         </div>
-        <iframe class="player-iframe" id="playerIframe" sandbox="allow-scripts allow-same-origin allow-forms" allowfullscreen></iframe>
     </div>
 </div>
-
-<!-- Botão Fullscreen Global -->
-<button class="fullscreen-btn" id="globalFullscreenBtn">
-    <i class="fas fa-expand"></i>
-</button>
 
 <script>
     const rawLinks = `
+const rawLinks = `
 https://embedcanais.com/adultswim
 https://embedcanais.com/aee
 https://embedcanais.com/amc
@@ -774,17 +851,13 @@ https://embedtv.org/warner
             const urlObj = new URL(link);
             let name = "";
 
-            // 1. Se tiver ?stream=xxx → usa isso
             if (urlObj.searchParams.has("stream")) {
                 name = urlObj.searchParams.get("stream");
-            } 
-            // 2. Se não, usa última parte do caminho (/xxx)
-            else {
+            } else {
                 const pathParts = urlObj.pathname.split('/').filter(p => p !== '');
                 name = pathParts[pathParts.length - 1] || "Canal Desconhecido";
             }
 
-            // 3. Ajusta formatação → TUDO EM MAIÚSCULAS
             name = name.replace(/[_-]/g, ' ')
                        .toUpperCase();
 
@@ -794,116 +867,133 @@ https://embedtv.org/warner
         }
     });
 
-    const listContainer = document.getElementById('channelList');
+    const channelsHorizontal = document.getElementById('channelsHorizontal');
     const playerOverlay = document.getElementById('playerOverlay');
     const playerIframe = document.getElementById('playerIframe');
+    const playerTitle = document.getElementById('playerTitle');
     const closePlayer = document.getElementById('closePlayer');
-    const fullscreenBtn = document.getElementById('fullscreenBtn');
-    const globalFullscreenBtn = document.getElementById('globalFullscreenBtn');
     const searchInput = document.getElementById('searchInput');
+    const sizeNormal = document.getElementById('sizeNormal');
+    const sizeMedium = document.getElementById('sizeMedium');
+    const sizeFull = document.getElementById('sizeFull');
+    const pipMode = document.getElementById('pipMode');
+    const playerContainer = document.getElementById('playerContainer');
+
+    let currentSizeMode = 'full';
+    let isPipMode = false;
 
     function renderChannels(){
-        listContainer.innerHTML = '';
+        channelsHorizontal.innerHTML = '';
         channels.forEach(ch => {
             const div = document.createElement('div');
-            div.className = 'channel-item';
+            div.className = 'channel-item-horizontal';
             div.textContent = ch.name;
+            div.setAttribute('data-url', ch.url);
+            div.setAttribute('data-name', ch.name);
 
             div.addEventListener('click', () => {
-                openInPlayer(ch.url);
+                openPlayer(ch.url, ch.name);
             });
 
-            listContainer.appendChild(div);
+            channelsHorizontal.appendChild(div);
         });
     }
 
-    function openInPlayer(url){
+    function openPlayer(url, name) {
         playerIframe.src = url;
+        playerTitle.textContent = `ASSISTINDO: ${name}`;
         playerOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
+        
+        // Reset para modo tela cheia
+        setSizeMode('full');
+        isPipMode = false;
     }
 
     function closePlayerHandler() {
         playerOverlay.classList.remove('active');
         playerIframe.src = '';
         document.body.style.overflow = 'auto';
+        
+        // Sair do modo PIP se estiver ativo
+        if (document.pictureInPictureElement) {
+            document.exitPictureInPicture().catch(console.error);
+        }
+    }
+
+    function setSizeMode(mode) {
+        currentSizeMode = mode;
+        
+        // Remover classe active de todos os botões
+        sizeNormal.classList.remove('active');
+        sizeMedium.classList.remove('active');
+        sizeFull.classList.remove('active');
+        
+        // Aplicar estilos conforme o modo selecionado
+        switch(mode) {
+            case 'normal':
+                playerIframe.style.objectFit = 'contain';
+                playerIframe.style.width = '100%';
+                playerIframe.style.height = '100%';
+                sizeNormal.classList.add('active');
+                break;
+            case 'medium':
+                playerIframe.style.objectFit = 'cover';
+                playerIframe.style.width = '100%';
+                playerIframe.style.height = '100%';
+                sizeMedium.classList.add('active');
+                break;
+            case 'full':
+                playerIframe.style.objectFit = 'cover';
+                playerIframe.style.width = '100%';
+                playerIframe.style.height = '100%';
+                playerIframe.style.transform = 'scale(1.1)';
+                sizeFull.classList.add('active');
+                break;
+        }
+    }
+
+    async function togglePipMode() {
+        try {
+            if (document.pictureInPictureElement) {
+                await document.exitPictureInPicture();
+                isPipMode = false;
+                pipMode.classList.remove('active');
+            } else if (document.pictureInPictureEnabled) {
+                await playerIframe.requestPictureInPicture();
+                isPipMode = true;
+                pipMode.classList.add('active');
+            }
+        } catch (error) {
+            console.error('Erro no modo PIP:', error);
+        }
     }
 
     closePlayer.addEventListener('click', closePlayerHandler);
-
-    function toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            if (playerIframe.requestFullscreen) {
-                playerIframe.requestFullscreen();
-            } else if (playerIframe.webkitRequestFullscreen) {
-                playerIframe.webkitRequestFullscreen();
-            } else if (playerIframe.msRequestFullscreen) {
-                playerIframe.msRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            }
-        }
-    }
-
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
     
-    // Fullscreen global para a página toda
-    globalFullscreenBtn.addEventListener('click', function() {
-        if (!document.fullscreenElement) {
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            } else if (document.documentElement.webkitRequestFullscreen) {
-                document.documentElement.webkitRequestFullscreen();
-            } else if (document.documentElement.msRequestFullscreen) {
-                document.documentElement.msRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            }
-        }
-    });
+    sizeNormal.addEventListener('click', () => setSizeMode('normal'));
+    sizeMedium.addEventListener('click', () => setSizeMode('medium'));
+    sizeFull.addEventListener('click', () => setSizeMode('full'));
+    pipMode.addEventListener('click', togglePipMode);
 
     function filterChannels(){
         const val = searchInput.value.toUpperCase();
-        const items = document.querySelectorAll('.channel-item');
+        const items = document.querySelectorAll('.channel-item-horizontal');
         
-        items.forEach((item, idx) => {
-            const chName = channels[idx].name.toUpperCase();
+        items.forEach(item => {
+            const chName = item.getAttribute('data-name');
             item.style.display = chName.includes(val) ? 'flex' : 'none';
         });
     }
 
     // Fechar player com a tecla ESC
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            if (playerOverlay.classList.contains('active')) {
-                closePlayerHandler();
-            }
-        }
-        
-        // Atalho para focar na busca (Ctrl+F)
-        if (e.ctrlKey && e.key === 'f') {
-            e.preventDefault();
-            searchInput.focus();
+        if (e.key === 'Escape' && playerOverlay.classList.contains('active')) {
+            closePlayerHandler();
         }
     });
 
-    // Focar na busca ao carregar a página
-    window.addEventListener('load', () => {
-        searchInput.focus();
-    });
-
+    // Inicializar
     renderChannels();
 </script>
 </body>
