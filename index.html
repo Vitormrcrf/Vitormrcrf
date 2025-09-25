@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MARCOS TV - EDIÇÃO VERMELHA RADICAL</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 * { 
     margin:0; 
@@ -293,6 +294,28 @@ header::after {
 ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(to bottom, #ff3366, #ff6699);
 }
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff003c;
+    font-size: 1.5rem;
+    z-index: 10;
+}
+
+.channel-info {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(0,0,0,0.7);
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    z-index: 10000;
+    border-left: 3px solid #ff003c;
+}
 </style>
 </head>
 <body>
@@ -309,10 +332,13 @@ header::after {
 
 <div class="player-overlay" id="playerOverlay">
     <div class="player-container">
+        <div class="channel-info" id="channelInfo"></div>
         <div class="close-btn" id="closePlayer"><i class="fas fa-times"></i></div>
         <div class="player-controls">
             <button class="player-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
+            <button class="player-btn" id="refreshBtn"><i class="fas fa-redo"></i></button>
         </div>
+        <div class="loading" id="loadingIndicator">CARREGANDO...</div>
         <iframe class="player-iframe" id="playerIframe" sandbox="allow-scripts allow-same-origin allow-forms" allowfullscreen></iframe>
     </div>
 </div>
@@ -348,8 +374,11 @@ const playerOverlay = document.getElementById('playerOverlay');
 const playerIframe = document.getElementById('playerIframe');
 const closePlayer = document.getElementById('closePlayer');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
+const refreshBtn = document.getElementById('refreshBtn');
 const globalFullscreenBtn = document.getElementById('globalFullscreenBtn');
 const searchInput = document.getElementById('searchInput');
+const loadingIndicator = document.getElementById('loadingIndicator');
+const channelInfo = document.getElementById('channelInfo');
 
 let currentChannel = null;
 let checkInterval = null;
@@ -362,33 +391,59 @@ function renderChannels(){
         div.textContent = ch.name;
 
         div.addEventListener('click', () => {
-            openInPlayer(ch.url);
+            openInPlayer(ch.url, ch.name);
         });
 
         listContainer.appendChild(div);
     });
 }
 
-function openInPlayer(url){
+function openInPlayer(url, name){
     currentChannel = url;
-    playerIframe.src = url;
+    channelInfo.textContent = name;
+    
+    // Mostrar indicador de carregamento
+    loadingIndicator.style.display = 'block';
+    playerIframe.style.display = 'none';
+    
     playerOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    // Auto play e monitoramento de redirecionamento
+    // Definir o iframe source
+    playerIframe.src = url;
+    
+    // Monitorar quando o iframe carrega
+    playerIframe.onload = function() {
+        loadingIndicator.style.display = 'none';
+        playerIframe.style.display = 'block';
+    };
+    
+    // Monitorar erros
+    playerIframe.onerror = function() {
+        loadingIndicator.textContent = 'ERRO AO CARREGAR O CANAL';
+        setTimeout(() => {
+            loadingIndicator.style.display = 'none';
+            playerIframe.style.display = 'block';
+        }, 3000);
+    };
+    
+    // Remover qualquer intervalo anterior
     if(checkInterval) clearInterval(checkInterval);
+    
+    // Nova lógica de monitoramento
     checkInterval = setInterval(() => {
         try {
-            const iframeLocation = playerIframe.contentWindow.location.href;
-            if(iframeLocation && iframeLocation !== url){
-                // Redirecionamento detectado
-                window.open(iframeLocation, '_blank'); // abre em outra aba
-                playerIframe.src = url; // volta para o canal original
+            // Tentar verificar se há redirecionamento
+            const iframeDoc = playerIframe.contentDocument || playerIframe.contentWindow.document;
+            if(iframeDoc.URL && iframeDoc.URL !== url && iframeDoc.URL !== 'about:blank') {
+                console.log('Redirecionamento detectado:', iframeDoc.URL);
+                // Abrir em nova aba
+                window.open(iframeDoc.URL, '_blank');
             }
-        } catch(e){
-            // cross-origin: ignora, assume que está rodando certo
+        } catch(e) {
+            // Erro de cross-origin - normal para iframes de outros domínios
         }
-    }, 1000);
+    }, 2000);
 }
 
 function closePlayerHandler() {
@@ -399,6 +454,16 @@ function closePlayerHandler() {
 }
 
 closePlayer.addEventListener('click', closePlayerHandler);
+
+function refreshPlayer() {
+    if (currentChannel) {
+        loadingIndicator.style.display = 'block';
+        playerIframe.style.display = 'none';
+        playerIframe.src = currentChannel;
+    }
+}
+
+refreshBtn.addEventListener('click', refreshPlayer);
 
 function toggleFullscreen(element) {
     if (!document.fullscreenElement) {
