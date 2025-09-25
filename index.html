@@ -311,4 +311,145 @@ header::after {
     <div class="player-container">
         <div class="close-btn" id="closePlayer"><i class="fas fa-times"></i></div>
         <div class="player-controls">
-            <button class="player-btn" id="
+            <button class="player-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
+        </div>
+        <iframe class="player-iframe" id="playerIframe" sandbox="allow-scripts allow-same-origin allow-forms" allowfullscreen></iframe>
+    </div>
+</div>
+
+<button class="fullscreen-btn" id="globalFullscreenBtn"><i class="fas fa-expand"></i></button>
+
+<script>
+const rawLinks = `
+https://la14hd.com/vivo/canales.php?stream=premiere1
+`;
+
+const links = rawLinks.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+
+const channels = links.map(link => {
+    try {
+        const urlObj = new URL(link);
+        let name = "";
+        if (urlObj.searchParams.has("stream")) {
+            name = urlObj.searchParams.get("stream");
+        } else {
+            const pathParts = urlObj.pathname.split('/').filter(p => p !== '');
+            name = pathParts[pathParts.length - 1] || "Canal Desconhecido";
+        }
+        name = name.replace(/[_-]/g, ' ').toUpperCase();
+        return { name: name, url: link };
+    } catch(e) {
+        return { name: "CANAL INVÁLIDO", url: link };
+    }
+});
+
+const listContainer = document.getElementById('channelList');
+const playerOverlay = document.getElementById('playerOverlay');
+const playerIframe = document.getElementById('playerIframe');
+const closePlayer = document.getElementById('closePlayer');
+const fullscreenBtn = document.getElementById('fullscreenBtn');
+const globalFullscreenBtn = document.getElementById('globalFullscreenBtn');
+const searchInput = document.getElementById('searchInput');
+
+let currentChannel = null;
+let checkInterval = null;
+
+function renderChannels(){
+    listContainer.innerHTML = '';
+    channels.forEach(ch => {
+        const div = document.createElement('div');
+        div.className = 'channel-item';
+        div.textContent = ch.name;
+
+        div.addEventListener('click', () => {
+            openInPlayer(ch.url);
+        });
+
+        listContainer.appendChild(div);
+    });
+}
+
+function openInPlayer(url){
+    currentChannel = url;
+    playerIframe.src = url;
+    playerOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Auto play e monitoramento de redirecionamento
+    if(checkInterval) clearInterval(checkInterval);
+    checkInterval = setInterval(() => {
+        try {
+            const iframeLocation = playerIframe.contentWindow.location.href;
+            if(iframeLocation && iframeLocation !== url){
+                // Redirecionamento detectado
+                window.open(iframeLocation, '_blank'); // abre em outra aba
+                playerIframe.src = url; // volta para o canal original
+            }
+        } catch(e){
+            // cross-origin: ignora, assume que está rodando certo
+        }
+    }, 1000);
+}
+
+function closePlayerHandler() {
+    playerOverlay.classList.remove('active');
+    playerIframe.src = '';
+    document.body.style.overflow = 'auto';
+    if(checkInterval) clearInterval(checkInterval);
+}
+
+closePlayer.addEventListener('click', closePlayerHandler);
+
+function toggleFullscreen(element) {
+    if (!document.fullscreenElement) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+}
+
+fullscreenBtn.addEventListener('click', () => toggleFullscreen(playerIframe));
+globalFullscreenBtn.addEventListener('click', () => toggleFullscreen(document.documentElement));
+
+function filterChannels(){
+    const val = searchInput.value.toUpperCase();
+    const items = document.querySelectorAll('.channel-item');
+    
+    items.forEach((item, idx) => {
+        const chName = channels[idx].name.toUpperCase();
+        item.style.display = chName.includes(val) ? 'flex' : 'none';
+    });
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (playerOverlay.classList.contains('active')) {
+            closePlayerHandler();
+        }
+    }
+    if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault();
+        searchInput.focus();
+    }
+});
+
+window.addEventListener('load', () => {
+    searchInput.focus();
+});
+
+renderChannels();
+</script>
+</body>
+</html>
