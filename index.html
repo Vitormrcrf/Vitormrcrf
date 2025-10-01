@@ -3,319 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MARCOS TV - EDIÇÃO VERMELHA RADICAL</title>
+<title>MARCOS TV</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-* { 
-    margin:0; 
-    padding:0; 
-    box-sizing:border-box; 
-    font-family: 'Orbitron', 'Rajdhani', sans-serif;
-    text-transform: uppercase;
-}
-html, body { 
-    height:100%; 
-    width:100%; 
-}
-body {
-    background: url('https://i.ibb.co/HfTvWs15/Picsart-25-09-11-23-50-59-204.gif') no-repeat center center fixed;
-    background-size: cover;
-    color:#fff;
-    display:flex;
-    flex-direction:column;
-    overflow-x:hidden;
-    overflow-y:auto;
-    padding:20px;
-}
-
-header {
-    text-align:center;
-    padding:25px 0;
-    font-size:3rem;
-    font-weight:900;
-    color: #fff;
-    text-shadow: 0 0 5px #fff, 0 0 10px #ff003c, 0 0 20px #ff003c, 0 0 30px #ff003c;
-    margin-bottom: 20px;
-    letter-spacing: 2px;
-    font-family: 'Orbitron', sans-serif;
-    position: relative;
-    animation: glow 3s infinite;
-}
-
-header::after {
-    content: '';
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, #ff003c, #ff3366, transparent);
-    border-radius: 3px;
-}
-
-.search-container {
-    display:flex;
-    justify-content:center;
-    padding:15px 0 30px 0;
-    position: relative;
-}
-
-.search-box {
-    width:100%;
-    max-width:500px;
-    position: relative;
-}
-
-.search-box input {
-    width:100%;
-    padding:16px 20px 16px 50px;
-    border-radius:50px;
-    border:2px solid rgba(255,0,60,0.4);
-    font-size:1rem;
-    background-color: rgba(0,0,0,0.7);
-    color:#fff;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 5px 20px rgba(255,0,60,0.2);
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
-    font-weight: 600;
-}
-
-.search-box input:focus {
-    outline: none;
-    border-color: #ff003c;
-    box-shadow: 0 0 20px rgba(255,0,60,0.7);
-    background-color: rgba(0,0,0,0.8);
-}
-
-.search-icon {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #ff003c;
-    font-size: 1.2rem;
-    z-index: 1;
-}
-
-.search-box input::placeholder { 
-    color: #ccc; 
-    letter-spacing: 0.5px;
-}
-
-.channel-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.channel-item {
-    background: rgba(0,0,0,0.75);
-    padding: 15px 20px;
-    border-radius: 12px;
-    text-align: center;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: #fff;
-    min-width: 180px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,0,60,0.3);
-    backdrop-filter: blur(8px);
-    position: relative;
-    overflow: hidden;
-    font-family: 'Rajdhani', sans-serif;
-    flex: 1 0 auto;
-}
-
-.channel-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, #ff003c, #ff3366, #ff6699);
-    opacity: 0.8;
-    transition: all 0.3s ease;
-}
-
-.channel-item:hover {
-    transform: translateY(-8px) scale(1.05);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(255,0,60,0.6);
-    background: rgba(20,0,5,0.85);
-    border-color: rgba(255,0,60,0.5);
-}
-
-.channel-item:hover::before {
-    height: 6px;
-    opacity: 1;
-}
-
-.player-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.97);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.player-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.player-container {
-    width: 90%;
-    height: 80%;
-    position: relative;
-    border: 3px solid rgba(255,0,60,0.5);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 30px rgba(255,0,60,0.4);
-}
-
-.player-controls {
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    display: flex;
-    gap: 10px;
-    z-index: 10000;
-}
-
-.player-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(255,0,60,0.7);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    font-size: 18px;
-}
-
-.player-btn:hover {
-    background: rgba(255,0,60,1);
-    transform: scale(1.1);
-}
-
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 28px;
-    color: #fff;
-    background: rgba(255,0,60,0.7);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 10000;
-    transition: all 0.3s ease;
-    border: none;
-}
-
-.close-btn:hover {
-    background: rgba(255,0,60,1);
-    transform: rotate(90deg);
-}
-
-.player-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-.fullscreen-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: rgba(255,0,60,0.8);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 1000;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(255,0,60,0.4);
-    border: none;
-}
-
-.fullscreen-btn:hover {
-    background: rgba(255,0,60,1);
-    transform: scale(1.1);
-}
-
-@keyframes glow {
-    0% { text-shadow: 0 0 5px #fff, 0 0 10px #ff003c, 0 0 15px #ff003c; }
-    50% { text-shadow: 0 0 10px #fff, 0 0 20px #ff003c, 0 0 30px #ff003c; }
-    100% { text-shadow: 0 0 5px #fff, 0 0 10px #ff003c, 0 0 15px #ff003c; }
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-}
-::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.3);
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #ff003c, #ff3366);
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(to bottom, #ff3366, #ff6699);
-}
-
-.loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #ff003c;
-    font-size: 1.5rem;
-    z-index: 10;
-}
-
-.channel-info {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: rgba(0,0,0,0.7);
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 1rem;
-    z-index: 10000;
-    border-left: 3px solid #ff003c;
-}
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Roboto','Orbitron',sans-serif;}
+    body {
+        background:#0a0a0a url('https://i.ibb.co/HfTvWs15/Picsart-25-09-11-23-50-59-204.gif') no-repeat center center fixed;
+        background-size:cover;
+        color:#fff; min-height:100vh; display:flex; flex-direction:column;
+    }
+    header {
+        text-align:center; padding:20px; font-size:2rem; font-weight:800;
+        color:#fff; letter-spacing:2px; font-family:'Orbitron',sans-serif;
+        text-shadow:0 0 15px rgba(255,0,60,0.9),0 0 30px rgba(255,0,60,0.7);
+    }
+    .search-container {display:flex; justify-content:center; padding:10px 0 25px 0;}
+    .search-box {width:100%; max-width:500px; position:relative;}
+    .search-box input {
+        width:100%; padding:14px 20px 14px 50px; border-radius:50px;
+        border:2px solid rgba(255,0,60,0.5); background:rgba(0,0,0,0.7);
+        color:#fff; font-size:1rem; font-weight:600; transition:all .3s;
+    }
+    .search-box input:focus {outline:none; border-color:#ff003c; box-shadow:0 0 15px rgba(255,0,60,0.7);}
+    .search-icon {position:absolute; left:18px; top:50%; transform:translateY(-50%); color:#ff003c; font-size:1.2rem;}
+    .channel-list {
+        display:flex; flex-wrap:nowrap; gap:20px; overflow-x:auto; scroll-behavior:smooth;
+        padding:0 20px 20px 20px;
+    }
+    .channel-item {
+        flex:0 0 auto; background:rgba(20,20,20,0.85);
+        padding:15px; border-radius:12px; text-align:center;
+        font-weight:700; font-size:0.9rem; color:#fff; min-width:160px;
+        cursor:pointer; border:1px solid rgba(255,0,60,0.3);
+        transition:all .3s; box-shadow:0 6px 18px rgba(0,0,0,0.4);
+    }
+    .channel-item:hover {
+        transform:translateY(-5px) scale(1.05);
+        background:rgba(35,0,10,0.9);
+        box-shadow:0 10px 25px rgba(255,0,60,0.4);
+    }
+    ::-webkit-scrollbar {height:10px;}
+    ::-webkit-scrollbar-thumb {background:linear-gradient(90deg,#ff003c,#ff3366); border-radius:10px;}
 </style>
 </head>
 <body>
@@ -324,29 +52,15 @@ header::after {
 <div class="search-container">
     <div class="search-box">
         <div class="search-icon"><i class="fas fa-search"></i></div>
-        <input type="text" id="searchInput" placeholder="BUSCAR CANAL..." oninput="filterChannels()">
+        <input type="text" id="searchInput" placeholder="Buscar canal..." oninput="filterChannels()">
     </div>
 </div>
 
 <div class="channel-list" id="channelList"></div>
 
-<div class="player-overlay" id="playerOverlay">
-    <div class="player-container">
-        <div class="channel-info" id="channelInfo"></div>
-        <div class="close-btn" id="closePlayer"><i class="fas fa-times"></i></div>
-        <div class="player-controls">
-            <button class="player-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
-            <button class="player-btn" id="refreshBtn"><i class="fas fa-redo"></i></button>
-        </div>
-        <div class="loading" id="loadingIndicator">CARREGANDO...</div>
-        <iframe class="player-iframe" id="playerIframe" sandbox="allow-scripts allow-same-origin allow-forms" allowfullscreen></iframe>
-    </div>
-</div>
-
-<button class="fullscreen-btn" id="globalFullscreenBtn"><i class="fas fa-expand"></i></button>
-
 <script>
-const rawLinks = `
+    // Lista de links
+    const rawLinks = `
 https://embedcanais.com/adultswim
 https://embedcanais.com/aee
 https://embedcanais.com/amc
@@ -717,171 +431,63 @@ https://embedtv.org/universaltv
 https://embedtv.org/warner
 `;
 
-const links = rawLinks.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
-
-const channels = links.map(link => {
-    try {
-        const urlObj = new URL(link);
-        let name = "";
-        if (urlObj.searchParams.has("stream")) {
-            name = urlObj.searchParams.get("stream");
-        } else {
-            const pathParts = urlObj.pathname.split('/').filter(p => p !== '');
-            name = pathParts[pathParts.length - 1] || "Canal Desconhecido";
-        }
-        name = name.replace(/[_-]/g, ' ').toUpperCase();
-        return { name: name, url: link };
-    } catch(e) {
-        return { name: "CANAL INVÁLIDO", url: link };
-    }
-});
-
-const listContainer = document.getElementById('channelList');
-const playerOverlay = document.getElementById('playerOverlay');
-const playerIframe = document.getElementById('playerIframe');
-const closePlayer = document.getElementById('closePlayer');
-const fullscreenBtn = document.getElementById('fullscreenBtn');
-const refreshBtn = document.getElementById('refreshBtn');
-const globalFullscreenBtn = document.getElementById('globalFullscreenBtn');
-const searchInput = document.getElementById('searchInput');
-const loadingIndicator = document.getElementById('loadingIndicator');
-const channelInfo = document.getElementById('channelInfo');
-
-let currentChannel = null;
-let checkInterval = null;
-
-function renderChannels(){
-    listContainer.innerHTML = '';
-    channels.forEach(ch => {
-        const div = document.createElement('div');
-        div.className = 'channel-item';
-        div.textContent = ch.name;
-
-        div.addEventListener('click', () => {
-            openInPlayer(ch.url, ch.name);
-        });
-
-        listContainer.appendChild(div);
-    });
-}
-
-function openInPlayer(url, name){
-    currentChannel = url;
-    channelInfo.textContent = name;
-    
-    // Mostrar indicador de carregamento
-    loadingIndicator.style.display = 'block';
-    playerIframe.style.display = 'none';
-    
-    playerOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Definir o iframe source
-    playerIframe.src = url;
-    
-    // Monitorar quando o iframe carrega
-    playerIframe.onload = function() {
-        loadingIndicator.style.display = 'none';
-        playerIframe.style.display = 'block';
-    };
-    
-    // Monitorar erros
-    playerIframe.onerror = function() {
-        loadingIndicator.textContent = 'ERRO AO CARREGAR O CANAL';
-        setTimeout(() => {
-            loadingIndicator.style.display = 'none';
-            playerIframe.style.display = 'block';
-        }, 3000);
-    };
-    
-    // Remover qualquer intervalo anterior
-    if(checkInterval) clearInterval(checkInterval);
-    
-    // Nova lógica de monitoramento
-    checkInterval = setInterval(() => {
+    const links = rawLinks.trim().split('\n').filter(l=>l);
+    const channels = links.map(l=>{
         try {
-            // Tentar verificar se há redirecionamento
-            const iframeDoc = playerIframe.contentDocument || playerIframe.contentWindow.document;
-            if(iframeDoc.URL && iframeDoc.URL !== url && iframeDoc.URL !== 'about:blank') {
-                console.log('Redirecionamento detectado:', iframeDoc.URL);
-                // Abrir em nova aba
-                window.open(iframeDoc.URL, '_blank');
-            }
-        } catch(e) {
-            // Erro de cross-origin - normal para iframes de outros domínios
-        }
-    }, 2000);
-}
-
-function closePlayerHandler() {
-    playerOverlay.classList.remove('active');
-    playerIframe.src = '';
-    document.body.style.overflow = 'auto';
-    if(checkInterval) clearInterval(checkInterval);
-}
-
-closePlayer.addEventListener('click', closePlayerHandler);
-
-function refreshPlayer() {
-    if (currentChannel) {
-        loadingIndicator.style.display = 'block';
-        playerIframe.style.display = 'none';
-        playerIframe.src = currentChannel;
-    }
-}
-
-refreshBtn.addEventListener('click', refreshPlayer);
-
-function toggleFullscreen(element) {
-    if (!document.fullscreenElement) {
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) {
-            element.msRequestFullscreen();
-        }
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
-    }
-}
-
-fullscreenBtn.addEventListener('click', () => toggleFullscreen(playerIframe));
-globalFullscreenBtn.addEventListener('click', () => toggleFullscreen(document.documentElement));
-
-function filterChannels(){
-    const val = searchInput.value.toUpperCase();
-    const items = document.querySelectorAll('.channel-item');
-    
-    items.forEach((item, idx) => {
-        const chName = channels[idx].name.toUpperCase();
-        item.style.display = chName.includes(val) ? 'flex' : 'none';
+            let u=new URL(l);
+            let n=u.searchParams.get("stream")||u.pathname.split('/').pop();
+            return {name:n.toUpperCase(), url:l}
+        } catch(e){ return {name:"CANAL INVÁLIDO", url:l}}
     });
-}
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        if (playerOverlay.classList.contains('active')) {
-            closePlayerHandler();
-        }
+    const listContainer=document.getElementById('channelList');
+    const searchInput=document.getElementById('searchInput');
+
+    function renderChannels(){
+        listContainer.innerHTML='';
+        channels.forEach(ch=>{
+            const div=document.createElement('div');
+            div.className='channel-item'; div.textContent=ch.name;
+            div.addEventListener('click',()=>openChannel(ch.url));
+            listContainer.appendChild(div);
+        });
     }
-    if (e.ctrlKey && e.key === 'f') {
-        e.preventDefault();
-        searchInput.focus();
+
+    function openChannel(url){
+        // Cria iframe fullscreen direto
+        const iframe=document.createElement('iframe');
+        iframe.src=url;
+        iframe.allowFullscreen=true;
+        iframe.style.position="fixed";
+        iframe.style.top="0";
+        iframe.style.left="0";
+        iframe.style.width="100%";
+        iframe.style.height="100%";
+        iframe.style.border="none";
+        iframe.style.zIndex="9999";
+        iframe.style.background="black";
+
+        document.body.appendChild(iframe);
+
+        // Vai fullscreen automático
+        if(iframe.requestFullscreen){iframe.requestFullscreen();}
+        else if(iframe.webkitRequestFullscreen){iframe.webkitRequestFullscreen();}
+        else if(iframe.msRequestFullscreen){iframe.msRequestFullscreen();}
+
+        // Se sair do fullscreen → remove o iframe
+        document.addEventListener("fullscreenchange",()=>{
+            if(!document.fullscreenElement){iframe.remove();}
+        });
     }
-});
 
-window.addEventListener('load', () => {
-    searchInput.focus();
-});
+    function filterChannels(){
+        const val=searchInput.value.toUpperCase();
+        document.querySelectorAll('.channel-item').forEach((item,i)=>{
+            item.style.display=channels[i].name.includes(val)?'flex':'none';
+        });
+    }
 
-renderChannels();
+    renderChannels();
 </script>
 </body>
 </html>
