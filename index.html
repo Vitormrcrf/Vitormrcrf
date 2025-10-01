@@ -5,42 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MARCOS TV</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
     * {margin:0; padding:0; box-sizing:border-box;}
     body {
         background:#0a0a0a url('https://i.ibb.co/TqKq6NPX/ROG.jpg') no-repeat center center fixed;
         background-size:cover;
-        color:#fff; min-height:100vh; display:flex; flex-direction:column;
+        color:#fff;
+        min-height:100vh;
         font-family:'Roboto','Segoe UI',sans-serif;
+        display:flex;
+        flex-direction:column;
     }
+
     header {
-        text-align:center; padding:20px; font-size:2.2rem; font-weight:800;
-        color:#fff; letter-spacing:1px; font-family:'Orbitron',sans-serif;
-        text-shadow:0 0 20px rgba(255,0,60,0.9),0 0 40px rgba(255,0,60,0.6);
+        text-align:center;
+        padding:25px 20px;
+        font-size:2.4rem;
+        font-family:'Orbitron',sans-serif;
+        font-weight:900;
+        letter-spacing:2px;
+        text-shadow:0 0 15px #fff,0 0 25px #ff003c,0 0 35px #ff3366;
+        color:#fff;
     }
+
     .search-container {display:flex; justify-content:center; padding:10px 0 25px 0;}
     .search-box {width:100%; max-width:500px; position:relative;}
     .search-box input {
         width:100%; padding:14px 20px 14px 50px; border-radius:12px;
         border:2px solid rgba(255,0,60,0.5); background:rgba(0,0,0,0.6);
         color:#fff; font-size:1rem; font-weight:500; transition:all .3s;
+        font-family:'Roboto',sans-serif;
     }
     .search-box input:focus {outline:none; border-color:#ff003c; box-shadow:0 0 15px rgba(255,0,60,0.7);}
-    .search-icon {position:absolute; left:18px; top:50%; transform:translateY(-50%); color:#ff003c; font-size:1.1rem;}
-    
-    /* Lista em grid */
+    .search-icon {position:absolute; left:18px; top:50%; transform:translateY(-50%); color:#ff003c; font-size:1.2rem;}
+
+    /* Grid canais 2xN */
     .channel-list {
         display:grid;
         grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
         gap:20px;
         padding:0 20px 40px 20px;
-        width:100%;
         max-width:900px;
         margin:0 auto;
     }
     .channel-item {
-        background:rgba(20,20,20,0.85);
-        padding:25px 10px;
+        background:rgba(30,30,30,0.9);
+        padding:20px 10px;
         border-radius:14px;
         text-align:center;
         font-weight:600;
@@ -50,16 +61,36 @@
         border:1px solid rgba(255,0,60,0.3);
         transition:all .3s;
         box-shadow:0 6px 16px rgba(0,0,0,0.5);
+        font-family:'Roboto',sans-serif;
     }
     .channel-item:hover {
         transform:translateY(-6px) scale(1.03);
-        background:rgba(30,0,10,0.9);
-        box-shadow:0 12px 24px rgba(255,0,60,0.4);
+        background:rgba(50,0,10,0.95);
+        box-shadow:0 12px 28px rgba(255,0,60,0.5);
     }
 
-    /* Scrollbar estilizada */
-    ::-webkit-scrollbar {width:8px;}
-    ::-webkit-scrollbar-thumb {background:linear-gradient(180deg,#ff003c,#ff3366); border-radius:10px;}
+    /* Botão rotação */
+    .rotate-btn {
+        position:fixed;
+        bottom:30px;
+        right:30px;
+        background:rgba(255,0,60,0.85);
+        width:50px;
+        height:50px;
+        border-radius:50%;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        cursor:pointer;
+        font-size:24px;
+        z-index:9999;
+        transition:all .3s, opacity .5s;
+        opacity:0;
+        pointer-events:none;
+    }
+    .rotate-btn.show {opacity:1; pointer-events:auto;}
+    .rotate-btn:hover {background:rgba(255,0,60,1); transform:scale(1.1);}
+
 </style>
 </head>
 <body>
@@ -74,8 +105,9 @@
 
 <div class="channel-list" id="channelList"></div>
 
+<div class="rotate-btn" id="rotateBtn" title="Girar para horizontal">🔁</div>
+
 <script>
-    // Links dos canais
     const rawLinks = `
 https://embedcanais.com/adultswim
 https://embedcanais.com/aee
@@ -458,53 +490,55 @@ https://embedtv.org/warner
 
     const listContainer=document.getElementById('channelList');
     const searchInput=document.getElementById('searchInput');
+    const rotateBtn=document.getElementById('rotateBtn');
 
     function renderChannels(){
         listContainer.innerHTML='';
         channels.forEach(ch=>{
             const div=document.createElement('div');
-            div.className='channel-item'; div.textContent=ch.name;
+            div.className='channel-item'; 
+            div.textContent=ch.name;
             div.addEventListener('click',()=>openChannel(ch.url));
             listContainer.appendChild(div);
         });
     }
 
     async function openChannel(url){
-    const iframe=document.createElement('iframe');
-    iframe.src=url;
-    iframe.allowFullscreen=true;
-    Object.assign(iframe.style,{
-        position:"fixed", top:"0", left:"0", width:"100%", height:"100%",
-        border:"none", zIndex:"9999", background:"black"
-    });
-    document.body.appendChild(iframe);
+        const iframe=document.createElement('iframe');
+        iframe.src=url;
+        iframe.allowFullscreen=true;
+        Object.assign(iframe.style,{
+            position:"fixed", top:"0", left:"0", width:"100%", height:"100%",
+            border:"none", zIndex:"9998", background:"black"
+        });
+        document.body.appendChild(iframe);
 
-    // Tentar fullscreen
-    try {
-        if(iframe.requestFullscreen){
-            await iframe.requestFullscreen();
-        } else if(iframe.webkitRequestFullscreen){
-            iframe.webkitRequestFullscreen();
-        } else if(iframe.msRequestFullscreen){
-            iframe.msRequestFullscreen();
-        }
-    } catch(e){ console.log("Erro fullscreen:", e); }
+        // Mostrar botão de rotação com animação
+        rotateBtn.classList.add('show');
 
-    // Só depois do fullscreen -> tentar travar horizontal
-    document.addEventListener("fullscreenchange", async ()=>{
-        if(document.fullscreenElement){
-            if (screen.orientation && screen.orientation.lock) {
-                try {
-                    await screen.orientation.lock("landscape");
-                } catch(e) {
-                    console.log("Não conseguiu travar em horizontal:", e);
-                }
-            }
-        } else {
-            iframe.remove();
-        }
-    });
+        // Fullscreen automático
+        if(iframe.requestFullscreen){ await iframe.requestFullscreen(); }
+        else if(iframe.webkitRequestFullscreen){ iframe.webkitRequestFullscreen(); }
+        else if(iframe.msRequestFullscreen){ iframe.msRequestFullscreen(); }
+
+        // Sair do fullscreen = remove iframe e esconde botão
+        document.addEventListener("fullscreenchange",()=>{ 
+            if(!document.fullscreenElement){ 
+                iframe.remove(); 
+                rotateBtn.classList.remove('show');
+            } 
+        });
     }
+
+    // Botão de girar horizontal
+    rotateBtn.addEventListener('click', async ()=>{
+        if (screen.orientation && screen.orientation.lock){
+            try { await screen.orientation.lock("landscape"); }
+            catch(e){ alert("Não foi possível girar a tela. Verifique permissões do app."); }
+        } else {
+            alert("Seu dispositivo não suporta travamento automático da orientação.");
+        }
+    });
 
     function filterChannels(){
         const val=searchInput.value.toUpperCase();
