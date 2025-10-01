@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
-/* RESET */
 * {margin:0; padding:0; box-sizing:border-box;}
 body {
     background:#0a0a0a url('https://i.ibb.co/TqKq6NPX/ROG.jpg') no-repeat center center fixed;
@@ -20,7 +19,7 @@ body {
     align-items:center;
 }
 
-/* HEADER - MARCOS TV COM LETRAS COLORIDAS */
+/* HEADER COM LETRAS COLORIDAS */
 header {
     text-align:center;
     padding:25px 10px;
@@ -41,25 +40,15 @@ header span {
     margin: 0 2px;
 }
 
-/* ANIMAÇÃO GRADIENTE POR LETRA */
 @keyframes neonLetter {
     0% {background-position:0% 50%;}
     50% {background-position:100% 50%;}
     100% {background-position:0% 50%;}
 }
 
-/* SEARCH BOX */
-.search-container {
-    display:flex;
-    justify-content:center;
-    padding:10px 0 25px 0;
-    width:100%;
-}
-.search-box {
-    width:100%;
-    max-width:500px;
-    position:relative;
-}
+/* SEARCH */
+.search-container { display:flex; justify-content:center; padding:10px 0 25px 0; width:100%; }
+.search-box { width:100%; max-width:500px; position:relative; }
 .search-box input {
     width:100%;
     padding:12px 20px 12px 45px;
@@ -96,7 +85,6 @@ header span {
     width:100%;
     perspective:1000px;
 }
-
 .channel-item {
     background:rgba(0,0,0,0.25);
     padding:20px 10px;
@@ -116,12 +104,11 @@ header span {
     justify-content:center;
     height:80px;
 }
-
 .channel-item:hover {
     box-shadow:0 10px 30px rgba(0,223,255,0.6);
 }
 
-/* OVERLAY DE VÍDEO */
+/* OVERLAY VÍDEO */
 .video-overlay {
     position:fixed;
     top:0; left:0;
@@ -138,25 +125,6 @@ header span {
     border:none;
     background:black;
 }
-
-/* BOTÃO ROTACIONAR/PLAY */
-.rotate-btn {
-    position:fixed;
-    bottom:25px;
-    right:25px;
-    background:rgba(0,223,255,0.85);
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    font-size:24px;
-    z-index:9999;
-    transition:all .3s, opacity .5s;
-}
-.rotate-btn:hover {background:rgba(0,223,255,1); transform:scale(1.1);}
 </style>
 </head>
 <body>
@@ -172,14 +140,12 @@ header span {
 
 <div class="channel-list" id="channelList"></div>
 
-<div class="rotate-btn" id="rotateBtn" title="Girar para horizontal">🔁</div>
-
 <script>
-// ANIMAÇÃO POR LETRA HEADER
+// HEADER POR LETRA COLORIDA
 const headerEl = document.getElementById('header');
-headerEl.innerHTML = headerEl.textContent.split('').map(letter => `<span>${letter}</span>`).join('');
+headerEl.innerHTML = headerEl.textContent.split('').map(l => `<span>${l}</span>`).join('');
 
-// LINKS
+// LINKS CANAIS
 const rawLinks = `
 https://embedcanais.com/adultswim
 https://embedcanais.com/aee
@@ -550,57 +516,49 @@ https://embedtv.org/ufcfightpass
 https://embedtv.org/universaltv
 https://embedtv.org/warner
 `;
-
-    const links = rawLinks.trim().split('\n').filter(l => l);
+const links = rawLinks.trim().split('\n').filter(l => l);
 const channels = links.map(l => {
     try {
         let u = new URL(l);
         let name = u.pathname.split('/').pop().replace(/[_-]/g,' ').toUpperCase();
         return {name: name, url: l};
-    } catch(e) {
-        return {name: "Canal Inválido", url: l};
-    }
+    } catch(e) { return {name:"Canal Inválido", url:l}; }
 });
 
 const listContainer = document.getElementById('channelList');
 const searchInput = document.getElementById('searchInput');
-const rotateBtn = document.getElementById('rotateBtn');
 
 function renderChannels(){
     listContainer.innerHTML='';
     channels.forEach(ch=>{
         const div = document.createElement('div');
-        div.className = 'channel-item';
-        div.textContent = ch.name;
+        div.className='channel-item';
+        div.textContent=ch.name;
 
-        // EFEITO 3D INTERATIVO
-        div.addEventListener('mousemove', e => {
-            const rect = div.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width/2;
-            const y = e.clientY - rect.top - rect.height/2;
-            div.style.transform = `rotateY(${x/15}deg) rotateX(${-y/15}deg) scale(1.05)`;
+        // 3D hover
+        div.addEventListener('mousemove', e=>{
+            const rect=div.getBoundingClientRect();
+            const x=e.clientX-rect.left-rect.width/2;
+            const y=e.clientY-rect.top-rect.height/2;
+            div.style.transform=`rotateY(${x/15}deg) rotateX(${-y/15}deg) scale(1.05)`;
         });
-        div.addEventListener('mouseleave', ()=> {
-            div.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1)';
-        });
+        div.addEventListener('mouseleave',()=>{ div.style.transform='rotateY(0deg) rotateX(0deg) scale(1)'; });
 
+        // CLICK ABRIR FULLSCREEN
         div.addEventListener('click', ()=>openChannel(ch.url));
+
         listContainer.appendChild(div);
     });
 }
 
 function openChannel(url){
-    const overlay = document.createElement('div');
-    overlay.className = 'video-overlay';
-    const iframe = document.createElement('iframe');
-    iframe.src = url;
-    iframe.allowFullscreen = true;
+    const overlay=document.createElement('div');
+    overlay.className='video-overlay';
+    const iframe=document.createElement('iframe');
+    iframe.src=url;
+    iframe.allowFullscreen=true;
     overlay.appendChild(iframe);
     document.body.appendChild(overlay);
-
-    // MOSTRA BOTÃO ROTATE PLAY
-    rotateBtn.style.display = 'flex';
-    rotateBtn.classList.add('show');
 
     if(iframe.requestFullscreen) iframe.requestFullscreen();
     else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
@@ -609,21 +567,9 @@ function openChannel(url){
     document.addEventListener("fullscreenchange", ()=>{
         if(!document.fullscreenElement){
             overlay.remove();
-            rotateBtn.style.display = 'none'; // SOME AUTOMATICAMENTE
         }
     });
 }
-
-// BOTÃO ROTACIONAR/PLAY SOME AO CLICAR
-rotateBtn.addEventListener('click', async ()=>{
-    rotateBtn.style.display = 'none';
-    if(screen.orientation && screen.orientation.lock){
-        try { await screen.orientation.lock("landscape"); }
-        catch(e){ alert("Não foi possível girar a tela."); }
-    } else {
-        alert("Seu dispositivo não suporta travamento automático da orientação.");
-    }
-});
 
 function filterChannels(){
     const val = searchInput.value.toUpperCase();
