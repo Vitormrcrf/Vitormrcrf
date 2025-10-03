@@ -5,131 +5,114 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MARCOS TV</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
-* {margin:0; padding:0; box-sizing:border-box;}
-body {
-    background:#0a0a0a url('https://i.ibb.co/TqKq6NPX/ROG.jpg') no-repeat center center fixed;
-    background-size:cover;
-    color:#fff;
-    min-height:100vh;
-    font-family:'Exo 2', 'Roboto', sans-serif;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
+    * {margin:0; padding:0; box-sizing:border-box;}
+    body {
+        background:#0a0a0a url('https://i.ibb.co/HfTvWs15/Picsart-25-09-11-23-50-59-204.gif') no-repeat center center fixed;
+        background-size:cover;
+        color:#fff;
+        min-height:100vh;
+        font-family:'Roboto','Segoe UI',sans-serif;
+        display:flex;
+        flex-direction:column;
+    }
 
-/* HEADER COM LETRAS COLORIDAS */
-header {
-    text-align:center;
-    padding:25px 10px;
-    font-size:3rem;
-    font-family:'Orbitron', sans-serif;
-    font-weight:900;
-    text-transform:uppercase;
-    letter-spacing:3px;
-}
+    header {
+        text-align:center;
+        padding:25px 20px;
+        font-size:2.4rem;
+        font-family:'Orbitron',sans-serif;
+        font-weight:900;
+        letter-spacing:2px;
+        text-shadow:0 0 15px #fff,0 0 25px #ff003c,0 0 35px #ff3366;
+        color:#fff;
+    }
 
-header span {
-    display:inline-block;
-    background: linear-gradient(45deg, #ff00ff, #00ffff, #ff9900, #00ff99, #ff0055);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: neonLetter 3s ease infinite alternate;
-    margin: 0 2px;
-}
+    .search-container {display:flex; justify-content:center; padding:10px 0 25px 0;}
+    .search-box {width:100%; max-width:500px; position:relative;}
+    .search-box input {
+        width:100%; padding:14px 20px 14px 50px; border-radius:12px;
+        border:2px solid rgba(255,0,60,0.5); background:rgba(0,0,0,0.6);
+        color:#fff; font-size:1rem; font-weight:500; transition:all .3s;
+        font-family:'Roboto',sans-serif;
+    }
+    .search-box input:focus {outline:none; border-color:#ff003c; box-shadow:0 0 15px rgba(255,0,60,0.7);}
+    .search-icon {position:absolute; left:18px; top:50%; transform:translateY(-50%); color:#ff003c; font-size:1.2rem;}
 
-@keyframes neonLetter {
-    0% {background-position:0% 50%;}
-    50% {background-position:100% 50%;}
-    100% {background-position:0% 50%;}
-}
+    /* Grid canais 2xN */
+    .channel-list {
+        display:grid;
+        grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+        gap:20px;
+        padding:0 20px 40px 20px;
+        max-width:900px;
+        margin:0 auto;
+    }
+    .channel-item {
+        background:rgba(30,30,30,0.9);
+        padding:20px 10px;
+        border-radius:14px;
+        text-align:center;
+        font-weight:600;
+        font-size:1rem;
+        color:#f5f5f5;
+        cursor:pointer;
+        border:1px solid rgba(255,0,60,0.3);
+        transition:all .3s;
+        box-shadow:0 6px 16px rgba(0,0,0,0.5);
+        font-family:'Roboto',sans-serif;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        perspective:1000px;
+    }
+    .channel-item:hover {
+        background:rgba(50,0,10,0.95);
+        box-shadow:0 12px 28px rgba(255,0,60,0.5);
+    }
 
-/* SEARCH */
-.search-container { display:flex; justify-content:center; padding:10px 0 25px 0; width:100%; }
-.search-box { width:100%; max-width:500px; position:relative; }
-.search-box input {
-    width:100%;
-    padding:12px 20px 12px 45px;
-    border-radius:12px;
-    border:2px solid rgba(0,223,255,0.5);
-    background:rgba(0,0,0,0.4);
-    color:#fff;
-    font-size:1rem;
-    font-weight:500;
-    transition:all .3s;
-    font-family:'Exo 2', sans-serif;
-}
-.search-box input:focus {
-    outline:none;
-    border-color:#00dfff;
-    box-shadow:0 0 15px rgba(0,223,255,0.6);
-}
-.search-icon {
-    position:absolute;
-    left:12px;
-    top:50%;
-    transform:translateY(-50%);
-    color:#00dfff;
-    font-size:1.2rem;
-}
+    /* Overlay do vídeo */
+    .video-overlay {
+        position:fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background:black;
+        z-index:9998;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+    .video-overlay iframe {
+        width:100%; height:100%;
+        border:none;
+    }
 
-/* LISTA DE CANAIS 3D */
-.channel-list {
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap:15px;
-    padding:0 20px 40px 20px;
-    max-width:600px;
-    width:100%;
-    perspective:1000px;
-}
-.channel-item {
-    background:rgba(0,0,0,0.25);
-    padding:20px 10px;
-    border-radius:15px;
-    text-align:center;
-    font-weight:700;
-    font-size:1.1rem;
-    color:#00ffaa;
-    cursor:pointer;
-    border:1px solid rgba(0,223,255,0.3);
-    transition:transform 0.2s ease, box-shadow 0.2s ease;
-    font-family:'Orbitron',sans-serif;
-    backdrop-filter: blur(5px);
-    box-shadow:0 5px 15px rgba(0,223,255,0.3);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    height:80px;
-}
-.channel-item:hover {
-    box-shadow:0 10px 30px rgba(0,223,255,0.6);
-}
-
-/* OVERLAY VÍDEO */
-.video-overlay {
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:black;
-    z-index:9998;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-.video-overlay iframe {
-    width:100%;
-    height:100%;
-    border:none;
-    background:black;
-}
+    /* Botão rotação */
+    .rotate-btn {
+        position:fixed;
+        bottom:30px;
+        right:30px;
+        background:rgba(255,0,60,0.85);
+        width:50px;
+        height:50px;
+        border-radius:50%;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        cursor:pointer;
+        font-size:24px;
+        z-index:9999;
+        transition:all .3s, opacity .5s;
+        opacity:0;
+        pointer-events:none;
+    }
+    .rotate-btn.show {opacity:1; pointer-events:auto;}
+    .rotate-btn:hover {background:rgba(255,0,60,1); transform:scale(1.1);}
 </style>
 </head>
 <body>
-
-<header id="header">MARCOS TV</header>
+<header>MARCOS TV</header>
 
 <div class="search-container">
     <div class="search-box">
@@ -140,13 +123,10 @@ header span {
 
 <div class="channel-list" id="channelList"></div>
 
-<script>
-// HEADER POR LETRA COLORIDA
-const headerEl = document.getElementById('header');
-headerEl.innerHTML = headerEl.textContent.split('').map(l => `<span>${l}</span>`).join('');
+<div class="rotate-btn" id="rotateBtn" title="Girar para horizontal">🔁</div>
 
-// LINKS CANAIS
-const rawLinks = `
+<script>
+    const rawLinks = `
 https://enz.gdplayertv.to/embed/bein-sports-3/
 https://enz.gdplayertv.to/embed/bein-sports-3/
 https://enz.gdplayertv.to/embed/
