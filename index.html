@@ -984,68 +984,90 @@ https://embedtv.org/universaltv
 https://embedtv.org/warner
 `;
 const links = rawLinks.trim().split('\n').filter(l => l);
-const channels = links.map(l => {
-    try {
-        let u = new URL(l);
-        let name = u.pathname.split('/').pop().replace(/[_-]/g,' ').toUpperCase();
-        return {name: name, url: l};
-    } catch(e) { return {name:"Canal Inválido", url:l}; }
-});
 
-const listContainer = document.getElementById('channelList');
-const searchInput = document.getElementById('searchInput');
-
-function renderChannels(){
-    listContainer.innerHTML='';
-    channels.forEach(ch=>{
-        const div = document.createElement('div');
-        div.className='channel-item';
-        div.textContent=ch.name;
-
-        // 3D hover
-        div.addEventListener('mousemove', e=>{
-            const rect=div.getBoundingClientRect();
-            const x=e.clientX-rect.left-rect.width/2;
-            const y=e.clientY-rect.top-rect.height/2;
-            div.style.transform=`rotateY(${x/15}deg) rotateX(${-y/15}deg) scale(1.05)`;
-        });
-        div.addEventListener('mouseleave',()=>{ div.style.transform='rotateY(0deg) rotateX(0deg) scale(1)'; });
-
-        // CLICK ABRIR FULLSCREEN
-        div.addEventListener('click', ()=>openChannel(ch.url));
-
-        listContainer.appendChild(div);
-    });
-}
-
-function openChannel(url){
-    const overlay=document.createElement('div');
-    overlay.className='video-overlay';
-    const iframe=document.createElement('iframe');
-    iframe.src=url;
-    iframe.allowFullscreen=true;
-    overlay.appendChild(iframe);
-    document.body.appendChild(overlay);
-
-    if(iframe.requestFullscreen) iframe.requestFullscreen();
-    else if(iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
-    else if(iframe.msRequestFullscreen) iframe.msRequestFullscreen();
-
-    document.addEventListener("fullscreenchange", ()=>{
-        if(!document.fullscreenElement){
-            overlay.remove();
+    const channels = links.map(l => {
+        try {
+            let u = new URL(l);
+            let pathParts = u.pathname.split('/').filter(Boolean); // remove partes vazias
+            let name = pathParts.length > 0 ? pathParts[pathParts.length - 1] : "Canal Desconhecido";
+            name = name.replace(/[_-]/g,' ').toUpperCase();
+            return { name: name, url: l };
+        } catch(e) { 
+            return { name:"CANAL INVÁLIDO", url:l }; 
         }
     });
-}
 
-function filterChannels(){
-    const val = searchInput.value.toUpperCase();
-    document.querySelectorAll('.channel-item').forEach((item,i)=>{
-        item.style.display = channels[i].name.toUpperCase().includes(val) ? 'flex' : 'none';
+    const listContainer = document.getElementById('channelList');
+    const searchInput = document.getElementById('searchInput');
+    const rotateBtn = document.getElementById('rotateBtn');
+
+    function renderChannels(){
+        listContainer.innerHTML='';
+        channels.forEach(ch=>{
+            const div = document.createElement('div');
+            div.className='channel-item';
+            div.textContent=ch.name;
+
+            // efeito hover 3D
+            div.addEventListener('mousemove', e=>{
+                const rect=div.getBoundingClientRect();
+                const x=e.clientX-rect.left-rect.width/2;
+                const y=e.clientY-rect.top-rect.height/2;
+                div.style.transform=`rotateY(${x/15}deg) rotateX(${-y/15}deg) scale(1.05)`;
+            });
+            div.addEventListener('mouseleave',()=>{ div.style.transform='rotateY(0deg) rotateX(0deg) scale(1)'; });
+
+            // clique abre player
+            div.addEventListener('click', ()=>openChannel(ch.url));
+
+            listContainer.appendChild(div);
+        });
+    }
+
+    async function openChannel(url){
+        const overlay=document.createElement('div');
+        overlay.className='video-overlay';
+        const iframe=document.createElement('iframe');
+        iframe.src=url;
+        iframe.allowFullscreen=true;
+        overlay.appendChild(iframe);
+        document.body.appendChild(overlay);
+
+        // mostra botão de rotação
+        rotateBtn.classList.add('show');
+
+        // fullscreen automático
+        if(iframe.requestFullscreen){ await iframe.requestFullscreen(); }
+        else if(iframe.webkitRequestFullscreen){ iframe.webkitRequestFullscreen(); }
+        else if(iframe.msRequestFullscreen){ iframe.msRequestFullscreen(); }
+
+        // sair do fullscreen remove player
+        document.addEventListener("fullscreenchange", ()=>{ 
+            if(!document.fullscreenElement){ 
+                overlay.remove(); 
+                rotateBtn.classList.remove('show'); 
+            } 
+        });
+    }
+
+    // botão girar tela
+    rotateBtn.addEventListener('click', async ()=>{
+        if (screen.orientation && screen.orientation.lock){
+            try { await screen.orientation.lock("landscape"); }
+            catch(e){ alert("Não foi possível girar a tela automaticamente."); }
+        } else {
+            alert("Seu dispositivo não suporta travamento automático da orientação.");
+        }
     });
-}
 
-renderChannels();
+    function filterChannels(){
+        const val = searchInput.value.toUpperCase();
+        document.querySelectorAll('.channel-item').forEach((item,i)=>{
+            item.style.display = channels[i].name.toUpperCase().includes(val) ? 'flex' : 'none';
+        });
+    }
+
+    renderChannels();
 </script>
 </body>
 </html>
